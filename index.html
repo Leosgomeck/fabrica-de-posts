@@ -200,6 +200,28 @@ tr:last-child td{border-bottom:0}
 .pausa-on{background:var(--err)!important;border-color:var(--err)!important;color:#fff!important}
 @media (max-width:760px){.ajustes{grid-template-columns:1fr}}
 
+/* ───────── envio de vídeo ───────── */
+dialog#envio{border:0;padding:0;width:min(520px,calc(100% - 32px));background:var(--card);color:var(--ink)}
+dialog#envio::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(2px)}
+#envio form{display:grid;gap:16px;padding:30px 28px 26px}
+#envio h3{font:700 26px/1.1 var(--f-h);margin:4px 0 0;letter-spacing:-.02em}
+#envio label.campo{display:grid;gap:6px;font:500 10px var(--f-m);letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+#envio input[type=text],#envio textarea{border:1px solid var(--line);padding:11px 12px;font:14px var(--f-b);background:#FDFCFA;letter-spacing:0;text-transform:none;color:var(--ink)}
+#envio textarea{min-height:70px;resize:vertical}
+.arquivo{border:1px dashed var(--ink2);padding:22px;text-align:center;cursor:pointer;font:13px var(--f-m);color:var(--ink2);display:block}
+.arquivo.ok{border-style:solid;border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.arquivo input{display:none}
+.destinos{display:grid;gap:8px}
+.destino{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);padding:12px 14px;cursor:pointer;font-size:14px}
+.destino:has(input:checked){border-color:var(--ink);background:#FAF8F4}
+.destino input{margin-top:3px;accent-color:var(--ink)}
+.destino small{display:block;color:var(--mute);font-size:12px;margin-top:2px}
+.progresso{height:4px;background:var(--line);overflow:hidden}
+.progresso span{display:block;height:100%;width:0;background:var(--amber);transition:width .3s}
+#envio-msg{font:12px var(--f-m);color:var(--mute);min-height:16px;margin:0}
+#envio-msg.err{color:var(--err)}
+.faixa .direita{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;font:12px var(--f-m);letter-spacing:.04em;opacity:0;transition:.3s;z-index:60;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;transform:translateX(-50%)}
 .toast.err{background:var(--err)}
@@ -288,7 +310,10 @@ tr:last-child td{border-bottom:0}
           <button class="pilula" data-f="publicados" aria-pressed="false">Publicados<span class="n" id="n-publicados"></span></button>
           <button class="pilula" data-f="todos" aria-pressed="false">Todos<span class="n" id="n-todos"></span></button>
         </div>
-        <span id="msg" role="status">Carregando…</span>
+        <div class="direita">
+          <span id="msg" role="status">Carregando…</span>
+          <button class="bt pri" id="b-novo-reel">+ Novo reel</button>
+        </div>
       </div>
       <div id="lista"></div>
     </section>
@@ -356,6 +381,32 @@ tr:last-child td{border-bottom:0}
     </section>
   </main>
 </div>
+<dialog id="envio" aria-labelledby="envio-tit">
+  <form id="f-envio" method="dialog">
+    <span class="lbl" id="envio-sub">Enviar vídeo</span>
+    <h3 id="envio-tit">Novo reel</h3>
+    <label class="campo" id="envio-titulo-box">Título da capa
+      <input type="text" id="envio-titulo" maxlength="80" placeholder="Ex.: Perdi a discussão. Ganhei paz.">
+    </label>
+    <label class="campo">Legenda
+      <textarea id="envio-legenda" maxlength="2200" placeholder="Opcional: se ficar vazio, usa a legenda da pauta"></textarea>
+    </label>
+    <label class="arquivo" id="envio-arq">
+      <input type="file" id="envio-file" accept="video/*">
+      <span id="envio-arq-txt">Escolher vídeo (MP4/MOV 9:16, até 95 MB)</span>
+    </label>
+    <div class="destinos" role="radiogroup" aria-label="Destino">
+      <label class="destino"><input type="radio" name="destino" value="pasta" checked><span><b>Guardar no post</b><small>Vai para a pasta da peça e espera sua aprovação no Estúdio.</small></span></label>
+      <label class="destino"><input type="radio" name="destino" value="publicar"><span><b>Publicar agora no Instagram</b><small>Aprova e publica em cerca de 1 minuto (capa gerada automaticamente).</small></span></label>
+    </div>
+    <div class="progresso" aria-hidden="true"><span id="envio-barra"></span></div>
+    <p id="envio-msg" role="status"></p>
+    <div class="acoes">
+      <button type="button" class="bt pri" id="b-enviar">Enviar</button>
+      <button type="button" class="bt" id="b-envio-fechar">Fechar</button>
+    </div>
+  </form>
+</dialog>
 <div class="toast" id="toast" role="status"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -553,12 +604,13 @@ function cartao(it, agora) {
       (editavel ? '<textarea id="nota-' + esc(it.id) + '" placeholder="Nota (opcional): o que ajustar, ou confirmação"></textarea>' +
         '<div class="acoes">' +
           (podeAprovar ? '<button class="bt pri" data-a="aprovar">' + (vencido ? 'Aprovar e publicar' : 'Aprovar') + '</button>' : '') +
+          (autoral || /reel/i.test(it.formato) ? '<button class="bt amb" data-a="enviar">' + (/reel/i.test(it.formato) ? 'Enviar vídeo' : 'Enviar arquivo') + '</button>' : '') +
           '<button class="bt amb" data-a="ajustar">Ajustar</button>' +
-          '<button class="bt" data-a="regerar">' + (autoral ? 'Buscar arquivo' : 'Gerar de novo') + '</button>' +
+          '<button class="bt" data-a="regerar">' + (autoral ? 'Buscar no Drive' : 'Gerar de novo') + '</button>' +
           '<button class="bt perigo" data-a="cancelar">Cancelar</button>' +
         '</div>' : '') +
     '</div>';
-  el.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => acao(it.id, b.dataset.a, el)));
+  el.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => b.dataset.a === 'enviar' ? abrirEnvio(it) : acao(it.id, b.dataset.a, el)));
   return el;
 }
 
@@ -676,6 +728,83 @@ function desenharDesempenho() {
   $('tabela').innerHTML = linhas.length ? linhas.map(i => '<tr><td>' + esc(i.pubEm || i.dia) + '</td><td><span class="ponto" style="background:' + CORES[i.tipo] + '"></span>' + esc(i.tipo) + ' · ' + esc(i.id) + '</td><td class="n">' + fmt(i.views) + '</td><td class="n">' + fmt(i.curtidas) + '</td><td>' + esc(i.atualizado || '—') + '</td><td>' + (i.link ? '<a href="' + esc(i.link) + '" target="_blank" rel="noopener">abrir ↗</a>' : '') + '</td></tr>').join('')
     : '<tr><td colspan="6" style="color:var(--mute)">Nenhuma publicação ainda.</td></tr>';
 }
+
+/* ── envio de vídeo/arquivo (direto para a pasta do post ou publicar agora) ── */
+const ENV = { it: null, enviando: false };
+function abrirEnvio(it) {
+  ENV.it = it || null;
+  const reel = !it || /reel/i.test(it.formato);
+  $('envio-tit').textContent = it ? it.id + ' · ' + titulo(it) : 'Novo reel';
+  $('envio-sub').textContent = it ? (reel ? 'Enviar vídeo do reel' : 'Enviar arquivo do story') + ' · ' + it.data + ' ' + it.hora : 'Reel avulso · sai hoje';
+  $('envio-titulo-box').hidden = !!it;
+  $('envio-titulo').value = '';
+  $('envio-legenda').value = it && it.legenda && it.legenda !== '—' ? it.legenda : '';
+  $('envio-file').value = '';
+  $('envio-file').accept = reel ? 'video/*' : 'video/*,image/*';
+  $('envio-arq').classList.remove('ok');
+  $('envio-arq-txt').textContent = reel ? 'Escolher vídeo (MP4/MOV 9:16, até 95 MB)' : 'Escolher vídeo ou foto (9:16)';
+  $('envio-barra').style.width = '0';
+  envioMsg('');
+  document.querySelector('#envio input[value="pasta"]').checked = true;
+  $('b-enviar').disabled = false;
+  $('envio').showModal();
+}
+function envioMsg(t, erro) { const m = $('envio-msg'); m.textContent = t; m.className = erro ? 'err' : ''; }
+$('b-novo-reel').addEventListener('click', () => abrirEnvio(null));
+$('b-envio-fechar').addEventListener('click', () => { if (!ENV.enviando) $('envio').close(); });
+$('envio').addEventListener('cancel', e => { if (ENV.enviando) e.preventDefault(); });
+$('envio-file').addEventListener('change', () => {
+  const f = $('envio-file').files[0];
+  $('envio-arq').classList.toggle('ok', !!f);
+  $('envio-arq-txt').textContent = f ? f.name + ' · ' + (f.size / 1048576).toFixed(1) + ' MB' : 'Escolher arquivo';
+});
+const lerBase64 = blob => new Promise((ok, erro) => {
+  const r = new FileReader();
+  r.onload = () => ok(String(r.result).split(',')[1] || '');
+  r.onerror = () => erro(new Error('Não consegui ler o arquivo.'));
+  r.readAsDataURL(blob);
+});
+$('b-enviar').addEventListener('click', async () => {
+  const f = $('envio-file').files[0];
+  if (!f) { envioMsg('Escolha o arquivo.', true); return; }
+  const reel = !ENV.it || /reel/i.test(ENV.it.formato);
+  const tipo = f.type || (/\.mov$/i.test(f.name) ? 'video/quicktime' : /\.mp4$/i.test(f.name) ? 'video/mp4' : '');
+  if (reel && !/^video\//.test(tipo)) { envioMsg('Reel precisa de vídeo.', true); return; }
+  if (/^video\//.test(tipo) && f.size > 95 * 1048576) { envioMsg('Vídeo acima de 95 MB: exporte em 1080p (H.264).', true); return; }
+  if (!ENV.it && !$('envio-titulo').value.trim()) { envioMsg('Escreva o título da capa.', true); $('envio-titulo').focus(); return; }
+  const destino = document.querySelector('#envio input[name="destino"]:checked').value;
+  ENV.enviando = true; $('b-enviar').disabled = true; $('b-envio-fechar').disabled = true;
+  try {
+    envioMsg('Preparando o envio…');
+    const ini = await api('uploadInicio', [ENV.it ? ENV.it.id : '', f.name, tipo, f.size, $('envio-titulo').value.trim(), $('envio-legenda').value.trim()]);
+    const parte = ini.parte || 4 * 1048576;
+    let pos = 0;
+    while (pos < f.size) {
+      const fim = Math.min(pos + parte, f.size);
+      const b64 = await lerBase64(f.slice(pos, fim));
+      let r, tent = 0;
+      while (true) {
+        try { r = await api('uploadParte', [ini.up, pos, b64]); break; }
+        catch (e) { if (++tent >= 2) throw e; envioMsg('Conexão instável, tentando de novo…'); }
+      }
+      pos = r.recebido || fim;
+      const pct = Math.round(pos / f.size * 100);
+      $('envio-barra').style.width = pct + '%';
+      envioMsg('Enviando ' + ini.id + ': ' + pct + '%');
+    }
+    envioMsg(reel ? 'Gerando a capa e finalizando…' : 'Finalizando…');
+    const fim = await api('uploadFim', [ini.up, destino, $('envio-legenda').value.trim()]);
+    envioMsg(fim.msg);
+    toast(fim.id + ': ' + fim.msg);
+    S.prev = {};
+    await carregar();
+    setTimeout(() => { if (!ENV.enviando) $('envio').close(); }, 1500);
+  } catch (e) {
+    envioMsg(e.message || 'Falha no envio.', true);
+  } finally {
+    ENV.enviando = false; $('b-enviar').disabled = false; $('b-envio-fechar').disabled = false;
+  }
+});
 
 /* ── ajustes ── */
 $('b-pausa').addEventListener('click', async () => {
