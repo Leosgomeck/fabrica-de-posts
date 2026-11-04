@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fábrica de Post · Leo Gomes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="https://lh3.googleusercontent.com/d/15vCL5GKD19S8gkjWhaFZCZXVyWOucfjs">
+<style>
+:root{
+  --bg:#F6F4F0; --card:#FFFFFF; --ink:#141413; --ink2:#55534E; --mute:#8D8A83; --line:#E4E0D8; --guide:rgba(20,20,19,.06);
+  --amber:#D9692B; --amber2:#F3E2D6; --sky:#5C8CAE; --sky2:#E3EDF4;
+  --ok:#2F6B1F; --okbg:#E1F0DA; --warn:#8A520C; --warnbg:#FBEEDB; --err:#A32D2D; --errbg:#FBE7E7; --info:#0C447C; --infobg:#E5F0FA;
+  --f-h:"Inter Tight",system-ui,sans-serif; --f-b:"Inter",system-ui,sans-serif; --f-m:"IBM Plex Mono",ui-monospace,monospace;
+  --pad:clamp(16px,4vw,56px); --max:1320px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-b);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+.lbl{font:500 11px/1 var(--f-m);letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
+
+/* guias verticais (assinatura do layout) */
+.guias{position:fixed;inset:0;pointer-events:none;z-index:0;display:grid;grid-template-columns:repeat(4,1fr);max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+.guias i{border-left:1px solid var(--guide)}.guias i:last-child{border-right:1px solid var(--guide)}
+@media (max-width:760px){.guias{grid-template-columns:repeat(2,1fr)}.guias i:nth-child(n+3){display:none}}
+
+/* ───────── abertura ───────── */
+#abertura{position:fixed;inset:0;z-index:100;background:#0A0A09;overflow:hidden;cursor:pointer;transition:opacity .8s ease,visibility .8s}
+#abertura.sai{opacity:0;visibility:hidden}
+#abertura .foto{position:absolute;inset:0;transform:scale(1.09);animation:aproxima 7.4s cubic-bezier(.16,.7,.25,1) forwards}
+#abertura img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+#abertura .cor{filter:url(#mapa-cor);opacity:0;animation:colore 7.4s cubic-bezier(.45,0,.25,1) forwards}
+#abertura .veu{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.55));}
+#abertura .barra{position:absolute;left:50%;bottom:8vh;width:min(260px,56vw);height:2px;background:rgba(255,255,255,.16);transform:translateX(-50%);overflow:hidden}
+#abertura .barra span{position:absolute;inset:0;background:var(--amber);transform-origin:left;transform:scaleX(0);animation:enche 7.4s linear forwards}
+#abertura .pular{position:absolute;right:var(--pad);bottom:calc(8vh - 6px);font:500 10px var(--f-m);letter-spacing:.22em;color:rgba(255,255,255,.55);text-transform:uppercase}
+#abertura .tit-reserva{position:absolute;inset:0;display:grid;place-items:center;color:#F2EEE6;font:600 clamp(32px,6vw,72px)/1 var(--f-h);letter-spacing:.04em;opacity:0;transition:opacity .4s}
+#abertura.sem-foto .tit-reserva{opacity:1}
+@keyframes aproxima{to{transform:scale(1)}}
+@keyframes colore{0%{opacity:0}15%{opacity:.05}100%{opacity:1}}
+@keyframes enche{to{transform:scaleX(1)}}
+@media (max-aspect-ratio:4/3){#abertura img{object-fit:contain}#abertura .foto{background:#0A0A09}}
+@media (prefers-reduced-motion:reduce){#abertura .foto,#abertura .cor,#abertura .barra span{animation-duration:1.2s}}
+
+/* ───────── login ───────── */
+#login{position:fixed;inset:0;z-index:50;background:#0A0A09 center/cover no-repeat;display:flex;align-items:flex-end;padding:var(--pad)}
+#login .fundo{position:absolute;inset:0;overflow:hidden}
+#login .fundo img{width:100%;height:100%;object-fit:cover;filter:url(#mapa-cor) brightness(.55)}
+#login form{position:relative;background:var(--card);width:min(440px,100%);padding:34px 32px 30px;display:grid;gap:16px}
+#login h1{font:700 34px/1.05 var(--f-h);margin:4px 0 0;letter-spacing:-.02em}
+#login .campo{display:flex;border:1px solid var(--ink)}
+#login .campo input{flex:1;min-width:0;border:0;padding:14px 16px;background:transparent;font:500 15px var(--f-m);letter-spacing:.08em}
+#login .campo input:focus{outline:none}
+#login label.lembrar input{accent-color:var(--ink);width:16px;height:16px;margin:0}
+#login .fundo img[src=""]{display:none}
+#login .campo:focus-within{outline:2px solid var(--amber);outline-offset:2px}
+#login button{border:0;border-left:1px solid var(--ink);background:var(--ink);color:#fff;padding:0 20px;font:500 11px var(--f-m);letter-spacing:.22em;text-transform:uppercase;cursor:pointer}
+#login button:disabled{opacity:.6;cursor:wait}
+#login .erro{font:13px var(--f-m);color:var(--err);min-height:18px;margin:0}
+#login label.lembrar{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink2)}
+
+/* ───────── topo ───────── */
+.app{position:relative;z-index:1}
+header.topo{position:sticky;top:0;z-index:20;padding:0 var(--pad);max-width:var(--max);margin:0 auto}
+.barra-topo{display:flex;background:var(--card);border:1px solid var(--line);border-top:0;min-height:68px}
+.marca{display:flex;align-items:center;padding:0 22px;font:800 19px var(--f-h);letter-spacing:-.01em;border-right:1px solid var(--line);white-space:nowrap}
+.marca b{color:var(--amber)}
+.menu-btn{width:68px;border:0;border-right:1px solid var(--line);background:transparent;cursor:pointer;display:none;place-items:center}
+.menu-btn span,.menu-btn span::before,.menu-btn span::after{display:block;width:22px;height:1.5px;background:var(--ink);position:relative;content:""}
+.menu-btn span::before{position:absolute;top:-7px}.menu-btn span::after{position:absolute;top:7px}
+nav.abas{display:flex;margin-left:auto}
+nav.abas button{border:0;border-left:1px solid var(--line);background:transparent;padding:0 26px;font:500 11px var(--f-m);letter-spacing:.24em;text-transform:uppercase;cursor:pointer;color:var(--ink2);position:relative}
+nav.abas button[aria-current="page"]{color:var(--ink)}
+nav.abas button[aria-current="page"]::after{content:"";position:absolute;left:26px;right:26px;bottom:-1px;height:2px;background:var(--amber)}
+nav.abas button .n{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:9px;background:var(--amber);color:#fff;font-size:10px;letter-spacing:0;margin-left:8px;padding:0 5px}
+.sinais{display:flex;gap:16px;align-items:center;padding:0 22px;border-left:1px solid var(--line)}
+.sinal{display:flex;gap:7px;align-items:center;font:500 10px var(--f-m);letter-spacing:.16em;color:var(--mute);text-transform:uppercase;white-space:nowrap}
+.sinal i{width:7px;height:7px;border-radius:50%;background:var(--mute)}
+.sinal.on i{background:#3B8A1F;box-shadow:0 0 0 3px rgba(59,138,31,.15)}.sinal.off i{background:var(--err)}
+@media (max-width:980px){.sinais{display:none}}
+@media (max-width:760px){
+  .menu-btn{display:grid}
+  nav.abas{position:absolute;left:var(--pad);right:var(--pad);top:68px;flex-direction:column;background:var(--card);border:1px solid var(--line);border-top:0;display:none}
+  nav.abas.aberto{display:flex}
+  nav.abas button{border-left:0;border-top:1px solid var(--line);padding:18px 22px;text-align:left}
+  nav.abas button[aria-current="page"]::after{left:0;right:auto;top:0;bottom:0;width:3px;height:auto}
+  .marca{flex:1}
+}
+
+main{max-width:var(--max);margin:0 auto;padding:0 var(--pad) 90px}
+section.vista{animation:surge .5s ease both}
+@keyframes surge{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ───────── hero ───────── */
+.hero{display:grid;grid-template-columns:1.25fr 1fr;border:1px solid var(--line);border-top:0;background:var(--card)}
+.hero .esq{padding:56px 40px 40px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:22px}
+.hero h2{font:800 clamp(40px,6vw,84px)/.95 var(--f-h);letter-spacing:-.035em;margin:0}
+.hero h2 em{font-style:normal;color:var(--amber)}
+.hero p.sub{color:var(--ink2);max-width:46ch;margin:0}
+.stats{display:grid;grid-template-columns:1fr 1fr}
+.stat{padding:26px 26px 22px;border-bottom:1px solid var(--line);display:grid;gap:10px;align-content:start}
+.stat:nth-child(odd){border-right:1px solid var(--line)}
+.stat:nth-last-child(-n+2){border-bottom:0}
+.stat b{font:700 46px/1 var(--f-h);letter-spacing:-.03em}
+.stat.alerta b{color:var(--amber)}
+.destaque{display:grid;grid-template-columns:44px 1fr;border:1px solid var(--line);border-top:0;background:var(--card)}
+.destaque .vert{writing-mode:vertical-rl;transform:rotate(180deg);display:grid;place-items:center;border-right:1px solid var(--line);background:var(--sky2);font:500 10px var(--f-m);letter-spacing:.3em;color:var(--sky);text-transform:uppercase}
+.destaque .corpo{padding:22px 26px;display:flex;flex-wrap:wrap;gap:6px 28px;align-items:baseline}
+.destaque .corpo strong{font:600 20px/1.3 var(--f-h)}
+@media (max-width:900px){.hero{grid-template-columns:1fr}.hero .esq{border-right:0;border-bottom:1px solid var(--line);padding:40px 22px 30px}}
+
+/* ───────── filtros e grade ───────── */
+.faixa{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:30px 0 16px}
+.filtros{display:flex;flex-wrap:wrap;gap:8px}
+.pilula{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 16px;font:500 11px var(--f-m);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;color:var(--ink2)}
+.pilula[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.pilula .n{opacity:.65;margin-left:6px}
+#msg{font:12px var(--f-m);color:var(--mute);min-height:18px;letter-spacing:.04em}
+#msg.err{color:var(--err)}
+.dia{display:flex;align-items:center;gap:14px;margin:26px 0 0;padding:14px 0;border-top:1px solid var(--line)}
+.dia .lbl{color:var(--ink)}
+.dia .linha{flex:1;height:1px;background:var(--line)}
+.grade{display:grid;grid-template-columns:repeat(3,1fr);border-left:1px solid var(--line);border-top:1px solid var(--line);margin-top:10px}
+@media (max-width:1100px){.grade{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:680px){.grade{grid-template-columns:1fr}}
+.card{background:var(--card);border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;min-width:0;transition:background .2s}
+.card:hover{background:#FFFEFC}
+.card .prev{position:relative;background:#EDEAE3;aspect-ratio:4/5;max-height:440px;width:100%;overflow:hidden;display:grid;place-items:center}
+.card .prev img{width:100%;height:100%;object-fit:contain;display:block;transition:transform .6s ease}
+.card .quando{display:flex;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.card .quando .lbl:first-child{color:var(--ink)}
+.card:hover .prev img{transform:scale(1.02)}
+.card .prev iframe{width:100%;height:100%;border:0}
+.card .prev .vazio{font:12px/1.5 var(--f-m);color:var(--mute);padding:24px;text-align:center}
+.card .nav{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.circ{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.85);background:rgba(20,20,19,.35);color:#fff;display:grid;place-items:center;cursor:pointer;font-size:16px;backdrop-filter:blur(4px)}
+.card .nav span{font:500 11px var(--f-m);color:#fff;background:rgba(20,20,19,.55);padding:4px 10px;border-radius:999px}
+.card .video-link{position:absolute;top:12px;right:12px;font:500 10px var(--f-m);letter-spacing:.16em;background:#fff;padding:7px 10px;text-decoration:none;text-transform:uppercase}
+.card .info{padding:22px 24px 24px;display:grid;gap:12px;flex:1;align-content:start}
+.meta{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font:500 11px var(--f-m);letter-spacing:.1em;color:var(--mute);text-transform:uppercase}
+.meta b{color:var(--ink);font-weight:500}
+.tag{font:500 10px var(--f-m);letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:999px;background:#EEEBE5;color:#4A4843;white-space:nowrap}
+.tag.aguardando{background:var(--infobg);color:var(--info)}.tag.aprovado{background:var(--okbg);color:var(--ok)}
+.tag.ajustar{background:var(--warnbg);color:var(--warn)}.tag.erro{background:var(--errbg);color:var(--err)}
+.tag.atraso{background:var(--amber2);color:#9A4513}
+.card h3{font:650 22px/1.2 var(--f-h);letter-spacing:-.015em;margin:0}
+.card .leg{font-size:13.5px;color:var(--ink2);white-space:pre-wrap;max-height:4.7em;overflow:hidden;margin:0}
+.card .nota{font:12px/1.45 var(--f-m);background:var(--warnbg);color:var(--warn);padding:8px 10px;margin:0}
+.card .ok{font:12px var(--f-m);color:var(--ok);margin:0}
+.card textarea{width:100%;min-height:54px;border:1px solid var(--line);padding:10px 12px;font-size:13px;background:#FDFCFA;resize:vertical}
+.acoes{display:flex;flex-wrap:wrap;gap:8px}
+.bt{border:1px solid var(--ink);background:transparent;border-radius:999px;padding:10px 18px;font:500 11px var(--f-m);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:background .15s,color .15s}
+.bt:hover{background:var(--ink);color:#fff}
+.bt.pri{background:var(--ink);color:#fff}.bt.pri:hover{background:#000}
+.bt.amb{border-color:var(--amber);color:var(--amber)}.bt.amb:hover{background:var(--amber);color:#fff}
+.bt.perigo{border-color:var(--err);color:var(--err)}.bt.perigo:hover{background:var(--err);color:#fff}
+.bt:disabled{opacity:.45;cursor:wait}
+.vazio-lista{padding:60px 0;text-align:center;font:13px var(--f-m);color:var(--mute);border:1px solid var(--line);background:var(--card);margin-top:10px}
+
+/* ───────── desempenho ───────── */
+.painel{background:var(--card);border:1px solid var(--line);border-top:0}
+.painel-topo{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-end;padding:40px 40px 22px;border-bottom:1px solid var(--line)}
+.painel-topo h2{font:800 clamp(34px,5vw,64px)/.95 var(--f-h);letter-spacing:-.035em;margin:8px 0 0}
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:10px 18px;font:500 11px var(--f-m);letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.totais{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+.total{padding:24px 28px;border-right:1px solid var(--line);display:grid;gap:8px}
+.total:last-child{border-right:0}
+.total .lbl{display:flex;gap:8px;align-items:center}
+.total .lbl i{width:18px;height:3px;border-radius:2px}
+.total b{font:700 38px/1 var(--f-h);letter-spacing:-.03em}
+.total small{font:12px var(--f-m);color:var(--mute)}
+.grafico{padding:26px 28px 18px;height:min(420px,62vh)}
+.grafico canvas{width:100%!important;height:100%!important}
+.aviso-graf{padding:0 28px 22px;font:12px var(--f-m);color:var(--mute)}
+@media (max-width:680px){.totais{grid-template-columns:1fr}.total{border-right:0;border-bottom:1px solid var(--line)}.painel-topo{padding:30px 20px 18px}.grafico{padding:16px 10px}}
+.tabela-wrap{overflow-x:auto;border:1px solid var(--line);border-top:0;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+th{font:500 10px var(--f-m);letter-spacing:.2em;text-transform:uppercase;color:var(--mute);text-align:left;padding:16px 20px;border-bottom:1px solid var(--line)}
+td{padding:14px 20px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+td.n,th.n{text-align:right}
+tr:last-child td{border-bottom:0}
+.ponto{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}
+
+/* ───────── ajustes ───────── */
+.ajustes{display:grid;grid-template-columns:repeat(2,1fr);border-left:1px solid var(--line)}
+.ajuste{background:var(--card);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:30px 30px 28px;display:grid;gap:14px;align-content:start}
+.ajuste h3{font:650 22px/1.2 var(--f-h);margin:0}
+.ajuste p{margin:0;color:var(--ink2);font-size:14px}
+.ajuste .icone{width:48px;height:48px;border-radius:50%;background:var(--sky2);display:grid;place-items:center;color:var(--sky)}
+.ajuste input{width:100%;border:1px solid var(--line);padding:12px 14px;font:13px var(--f-m);background:#FDFCFA}
+.pausa-on{background:var(--err)!important;border-color:var(--err)!important;color:#fff!important}
+@media (max-width:760px){.ajustes{grid-template-columns:1fr}}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;font:12px var(--f-m);letter-spacing:.04em;opacity:0;transition:.3s;z-index:60;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.toast.err{background:var(--err)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="mapa-cor" color-interpolation-filters="sRGB">
+    <feComponentTransfer>
+      <feFuncR type="table" tableValues="0.04 0.10 0.42 0.85 1.0"/>
+      <feFuncG type="table" tableValues="0.07 0.16 0.33 0.62 0.95"/>
+      <feFuncB type="table" tableValues="0.10 0.24 0.30 0.38 0.86"/>
+    </feComponentTransfer>
+  </filter>
+</svg>
+
+<div id="abertura" role="img" aria-label="Fábrica de Post · Leo Gomes">
+  <div class="foto">
+    <img class="pb" alt="" src="https://lh3.googleusercontent.com/d/15vCL5GKD19S8gkjWhaFZCZXVyWOucfjs">
+    <img class="cor" alt="" src="https://lh3.googleusercontent.com/d/15vCL5GKD19S8gkjWhaFZCZXVyWOucfjs">
+  </div>
+  <div class="veu"></div>
+  <div class="tit-reserva">FÁBRICA DE POST</div>
+  <div class="barra" aria-hidden="true"><span></span></div>
+  <span class="pular">toque para pular</span>
+</div>
+
+<div class="guias" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<div id="login" hidden>
+  <div class="fundo"><img alt="" src="https://lh3.googleusercontent.com/d/15vCL5GKD19S8gkjWhaFZCZXVyWOucfjs"></div>
+  <form id="f-login" autocomplete="off">
+    <span class="lbl">@opinador_razoavel · acesso restrito</span>
+    <h1>Fábrica de Post</h1>
+    <div class="campo">
+      <input id="senha" type="password" autocomplete="current-password" placeholder="Senha" aria-label="Senha" required>
+      <button id="b-entrar" type="submit">Entrar</button>
+    </div>
+    <label class="lembrar"><input type="checkbox" id="lembrar" checked> Manter conectado neste aparelho (6 h)</label>
+    <p class="erro" id="login-erro" role="alert"></p>
+  </form>
+</div>
+
+<div class="app" id="app" hidden>
+  <header class="topo">
+    <div class="barra-topo">
+      <div class="marca">FÁBRICA<b>.</b></div>
+      <button class="menu-btn" id="menu-btn" aria-label="Abrir menu" aria-expanded="false"><span></span></button>
+      <nav class="abas" id="abas" aria-label="Seções">
+        <button type="button" data-v="estudio" aria-current="page">Estúdio<span class="n" id="n-menu" hidden></span></button>
+        <button type="button" data-v="desempenho">Desempenho</button>
+        <button type="button" data-v="ajustes">Ajustes</button>
+      </nav>
+      <div class="sinais">
+        <span class="sinal" id="s-ig"><i></i><span>Instagram</span></span>
+        <span class="sinal" id="s-ciclo"><i></i><span>Ciclo</span></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ESTÚDIO -->
+    <section class="vista" id="v-estudio">
+      <div class="hero">
+        <div class="esq">
+          <span class="lbl">Estúdio · aprovação e publicação</span>
+          <h2>Aprovar.<br>Publicar.<br><em>Medir.</em></h2>
+          <p class="sub">Nada sai sem a sua aprovação. Se o horário da pauta já passou, a peça sai no ciclo seguinte e o atraso fica registrado.</p>
+        </div>
+        <div class="stats">
+          <div class="stat alerta"><span class="lbl">Para aprovar</span><b id="st-aprovar">–</b></div>
+          <div class="stat"><span class="lbl">Na fila</span><b id="st-fila">–</b></div>
+          <div class="stat"><span class="lbl">Publicados · 7 dias</span><b id="st-pub">–</b></div>
+          <div class="stat"><span class="lbl">Com atraso</span><b id="st-atraso">–</b></div>
+        </div>
+      </div>
+      <div class="destaque" id="destaque" hidden>
+        <div class="vert">Próxima</div>
+        <div class="corpo" id="destaque-corpo"></div>
+      </div>
+      <div class="faixa">
+        <div class="filtros" id="filtros" role="group" aria-label="Filtro">
+          <button class="pilula" data-f="aprovar" aria-pressed="true">Para aprovar<span class="n" id="n-aprovar"></span></button>
+          <button class="pilula" data-f="aprovados" aria-pressed="false">Aprovados<span class="n" id="n-aprovados"></span></button>
+          <button class="pilula" data-f="proximos" aria-pressed="false">Em preparo<span class="n" id="n-proximos"></span></button>
+          <button class="pilula" data-f="publicados" aria-pressed="false">Publicados<span class="n" id="n-publicados"></span></button>
+          <button class="pilula" data-f="todos" aria-pressed="false">Todos<span class="n" id="n-todos"></span></button>
+        </div>
+        <span id="msg" role="status">Carregando…</span>
+      </div>
+      <div id="lista"></div>
+    </section>
+
+    <!-- DESEMPENHO -->
+    <section class="vista" id="v-desempenho" hidden>
+      <div class="painel">
+        <div class="painel-topo">
+          <div>
+            <span class="lbl">Desempenho · Instagram</span>
+            <h2>Views e curtidas</h2>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <div class="seg" role="group" aria-label="Métrica">
+              <button type="button" data-m="views" aria-pressed="true">Views</button>
+              <button type="button" data-m="curtidas" aria-pressed="false">Curtidas</button>
+            </div>
+            <button class="bt" id="b-atualizar">Atualizar agora</button>
+          </div>
+        </div>
+        <div class="totais" id="totais"></div>
+        <div class="grafico"><canvas id="graf" aria-label="Gráfico de views por dia: posts, reels e carrosséis" role="img"></canvas></div>
+        <p class="aviso-graf" id="aviso-graf"></p>
+      </div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Data</th><th>Tipo</th><th class="n">Views</th><th class="n">Curtidas</th><th>Atualizado</th><th></th></tr></thead>
+          <tbody id="tabela"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- AJUSTES -->
+    <section class="vista" id="v-ajustes" hidden>
+      <div class="painel"><div class="painel-topo"><div><span class="lbl">Ajustes</span><h2>Controle</h2></div></div></div>
+      <div class="ajustes">
+        <div class="ajuste">
+          <div class="icone"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></div>
+          <h3>Pausa geral</h3>
+          <p>Bloqueia todas as publicações na hora. A geração de artes continua.</p>
+          <div><button class="bt" id="b-pausa">Ligar pausa</button></div>
+        </div>
+        <div class="ajuste">
+          <div class="icone"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12a8 8 0 1 0 2.3-5.7"/><path d="M4 4v5h5"/></svg></div>
+          <h3>Rodar ciclo agora</h3>
+          <p>Gera artes, publica o que estiver aprovado (no horário ou atrasado) e mede. Roda sozinho a cada 10 min.</p>
+          <div><button class="bt" id="b-run">Rodar agora</button></div>
+        </div>
+        <div class="ajuste">
+          <div class="icone"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></div>
+          <h3>Token de publicação</h3>
+          <p id="tok-status">—</p>
+          <div class="campo-tok" style="display:grid;gap:8px">
+            <input id="tok" type="password" autocomplete="off" placeholder="Cole o novo token da @opinador_razoavel" aria-label="Token de publicação">
+            <div><button class="bt" id="b-tok">Conectar token</button></div>
+          </div>
+        </div>
+        <div class="ajuste">
+          <div class="icone"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16"/><path d="M4 10h16M10 4v16"/></svg></div>
+          <h3>Planilha e sessão</h3>
+          <p>Pauta, Desempenho, Log e Config ficam na planilha-mestre.</p>
+          <div class="acoes"><a class="bt" id="l-plan" href="#" target="_blank" rel="noopener" style="text-decoration:none">Abrir planilha ↗</a><button class="bt perigo" id="b-sair">Sair</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* Fábrica de Post · painel do GitHub. Fala só com o projeto "Fábrica · API" (senha + sessão). */
+const API_URL = 'https://script.google.com/macros/s/AKfycbxVkERe2pVPMaxJXNjQRqxAO5G5Qdnm6RQw37quYey-P7ut0T85HGwMmC9RvYdQ-Nwt/exec';
+const ABERTURA_MS = 7400;           // 2,4 s da abertura original + 5 s
+const CORES = { Posts: '#141413', Reels: '#D9692B', 'Carrosséis': '#5C8CAE' };
+const TIPOS = ['Posts', 'Reels', 'Carrosséis'];
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const S = { sessao: '', dados: null, filtro: 'aprovar', prev: {}, fila: [], carregandoPrev: false, vista: 'estudio', desemp: null, metrica: 'views', graf: null, timers: [] };
+
+/* ── armazenamento leve (pode falhar em aba anônima) ── */
+const guarda = {
+  ler() { try { const o = JSON.parse(localStorage.getItem('fab_sessao') || sessionStorage.getItem('fab_sessao') || 'null'); return o && o.exp > Date.now() ? o.s : ''; } catch (e) { return ''; } },
+  salvar(s, lembrar, seg) { const o = JSON.stringify({ s, exp: Date.now() + seg * 1000 - 60000 }); try { (lembrar ? localStorage : sessionStorage).setItem('fab_sessao', o); } catch (e) {} },
+  limpar() { try { localStorage.removeItem('fab_sessao'); sessionStorage.removeItem('fab_sessao'); } catch (e) {} }
+};
+
+/* ── API ── */
+async function api(op, args) {
+  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ op, args: args || [], sessao: S.sessao }) });
+  const j = await r.json();
+  if (j.sair) { sair(true); throw new Error(j.erro || 'Sessão expirada.'); }
+  if (!j.ok) throw new Error(j.erro || 'Erro desconhecido.');
+  return j.data;
+}
+
+function toast(t, erro) {
+  const el = $('toast'); el.textContent = t; el.className = 'toast on' + (erro ? ' err' : '');
+  clearTimeout(toast.t); toast.t = setTimeout(() => el.className = 'toast', erro ? 6000 : 3000);
+}
+function msg(t, erro) { const m = $('msg'); m.textContent = t || ''; m.className = erro ? 'err' : ''; }
+
+/* ── abertura: 7,4 s, colorindo até a imagem parar ── */
+const abertura = (() => {
+  const el = $('abertura');
+  let fim, feito = false;
+  const pronta = new Promise(r => fim = r);
+  const fechar = () => { if (feito) return; feito = true; el.classList.add('sai'); setTimeout(() => el.remove(), 900); fim(); };
+  const img = el.querySelector('img.pb');
+  img.addEventListener('error', () => el.classList.add('sem-foto'));
+  const reduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setTimeout(fechar, reduzido ? 1400 : ABERTURA_MS + 350);
+  el.addEventListener('click', fechar);
+  addEventListener('keydown', e => { if (e.key === 'Escape' || e.key === 'Enter') fechar(); }, { once: true });
+  return { pronta };
+})();
+
+/* ── login ── */
+$('f-login').addEventListener('submit', async e => {
+  e.preventDefault();
+  const b = $('b-entrar'); b.disabled = true; $('login-erro').textContent = '';
+  try {
+    const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ op: 'login', senha: $('senha').value }) }).then(x => x.json());
+    if (!r.ok) throw new Error(r.erro);
+    S.sessao = r.sessao; guarda.salvar(r.sessao, $('lembrar').checked, r.validade || 21600);
+    $('senha').value = '';
+    entrar();
+  } catch (err) {
+    $('login-erro').textContent = err.message || 'Não foi possível entrar.';
+  } finally { b.disabled = false; }
+});
+
+function mostrarLogin() { $('app').hidden = true; $('login').hidden = false; setTimeout(() => $('senha').focus(), 50); }
+
+function entrar() {
+  $('login').hidden = true; $('app').hidden = false;
+  carregar();
+  S.timers.forEach(clearInterval);
+  S.timers = [
+    setInterval(() => { if (!document.hidden && !digitando()) atualizarLista(); }, 60000),
+    setInterval(() => { if (!document.hidden && S.vista === 'desempenho') carregarDesempenho(); }, 60000)
+  ];
+}
+
+async function sair(expirou) {
+  const s = S.sessao; S.sessao = ''; guarda.limpar(); S.timers.forEach(clearInterval);
+  if (s && !expirou) { try { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ op: 'sair', sessao: s }) }); } catch (e) {} }
+  mostrarLogin();
+  if (expirou) $('login-erro').textContent = 'Sessão expirada. Entre de novo.';
+}
+$('b-sair').addEventListener('click', () => sair(false));
+
+/* ── navegação ── */
+$('abas').addEventListener('click', e => {
+  const b = e.target.closest('button[data-v]'); if (!b) return;
+  irPara(b.dataset.v);
+  $('abas').classList.remove('aberto'); $('menu-btn').setAttribute('aria-expanded', 'false');
+});
+$('menu-btn').addEventListener('click', () => {
+  const a = $('abas').classList.toggle('aberto'); $('menu-btn').setAttribute('aria-expanded', String(a));
+});
+function irPara(v) {
+  S.vista = v;
+  document.querySelectorAll('#abas button').forEach(x => x.dataset.v === v ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'));
+  ['estudio', 'desempenho', 'ajustes'].forEach(k => $('v-' + k).hidden = k !== v);
+  if (v === 'desempenho') carregarDesempenho();
+  scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── estúdio ── */
+const FILTROS = {
+  aprovar: s => ['Aguardando aprovação', 'Ajustar', 'Erro'].includes(s),
+  aprovados: s => s === 'Aprovado',
+  proximos: s => ['Rascunho', 'Em produção'].includes(s),
+  publicados: s => s === 'Publicado',
+  todos: () => true
+};
+const TAG = { 'Aguardando aprovação': 'aguardando', 'Aprovado': 'aprovado', 'Ajustar': 'ajustar', 'Erro': 'erro', 'Publicado': '' };
+const digitando = () => Array.from(document.querySelectorAll('textarea, #tok')).some(t => t.value.trim() || t === document.activeElement);
+
+async function carregar() {
+  msg('Carregando…');
+  try { aplicar(await api('lista')); msg(''); }
+  catch (e) { msg(e.message, true); }
+}
+async function atualizarLista() { try { aplicar(await api('lista')); } catch (e) { /* tenta no próximo */ } }
+
+function aplicar(d) {
+  S.dados = d;
+  const agora = d.agora || Date.now();
+  $('s-ig').className = 'sinal ' + (d.conectado ? 'on' : 'off');
+  $('s-ig').lastElementChild.textContent = d.conectado ? 'Instagram conectado' : 'Instagram sem token';
+  $('s-ciclo').className = 'sinal ' + (d.gatilho && !d.pausa ? 'on' : 'off');
+  $('s-ciclo').lastElementChild.textContent = d.pausa ? 'Pausa geral' : (d.gatilho ? 'Ciclo 10 min' : 'Ciclo desligado');
+  $('l-plan').href = d.planilha;
+  $('b-pausa').textContent = d.pausa ? 'Desligar pausa' : 'Ligar pausa';
+  $('b-pausa').classList.toggle('pausa-on', !!d.pausa);
+  $('tok-status').textContent = d.conectado ? 'Conectado à @opinador_razoavel. Só troque se o Instagram pedir.' : 'Sem token: as publicações estão paradas. Cole um token com instagram_business_content_publish.';
+  Object.keys(FILTROS).forEach(f => $('n-' + f).textContent = d.itens.filter(i => FILTROS[f](i.status)).length);
+  const pend = d.itens.filter(i => FILTROS.aprovar(i.status)).length;
+  $('n-menu').textContent = pend; $('n-menu').hidden = !pend;
+  $('st-aprovar').textContent = pend;
+  $('st-fila').textContent = d.itens.filter(i => i.status === 'Aprovado').length;
+  $('st-pub').textContent = d.itens.filter(i => i.status === 'Publicado' && i.when > agora - 7 * 864e5).length;
+  $('st-atraso').textContent = d.itens.filter(i => i.status !== 'Publicado' && i.status !== 'Pausado' && i.when < agora).length;
+  const prox = d.itens.filter(i => i.status === 'Aprovado').sort((a, b) => a.when - b.when)[0];
+  $('destaque').hidden = !prox;
+  if (prox) $('destaque-corpo').innerHTML = '<span class="lbl">' + esc(rotuloDia(prox.when)) + ' · ' + esc(prox.hora) + ' · ' + esc(prox.formato) + '</span><strong>' + esc(titulo(prox)) + '</strong>' +
+    (prox.when < agora ? '<span class="tag atraso">sai no próximo ciclo</span>' : '');
+  desenhar();
+}
+
+const titulo = it => (it.texto && it.texto !== '—' ? it.texto : it.tema) || it.id;
+
+function desenhar() {
+  const d = S.dados; if (!d) return;
+  const itens = d.itens.filter(i => FILTROS[S.filtro](i.status)).sort((a, b) => S.filtro === 'publicados' ? b.when - a.when : a.when - b.when);
+  const box = $('lista'); box.innerHTML = ''; S.fila = [];
+  if (!itens.length) { box.innerHTML = '<p class="vazio-lista">Nada aqui agora.</p>'; return; }
+  const grade = document.createElement('div'); grade.className = 'grade'; box.appendChild(grade);
+  itens.forEach(it => {
+    grade.appendChild(cartao(it, d.agora || Date.now()));
+    if (it.temArquivo) S.fila.push(it.id);
+  });
+  proximaPrevia();
+}
+
+function rotuloDia(t) {
+  const k = x => new Date(x).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+  const h = Date.now();
+  if (k(t) === k(h)) return 'Hoje';
+  if (k(t) === k(h + 864e5)) return 'Amanhã';
+  if (k(t) === k(h - 864e5)) return 'Ontem';
+  return new Date(t).toLocaleDateString('pt-BR', { weekday: 'long', timeZone: 'America/Sao_Paulo' });
+}
+
+function cartao(it, agora) {
+  const el = document.createElement('article'); el.className = 'card'; el.id = 'card-' + it.id;
+  const podeAprovar = ['Aguardando aprovação', 'Ajustar', 'Erro'].includes(it.status) && it.temArquivo;
+  const editavel = it.status !== 'Publicado';
+  const vencido = editavel && it.status !== 'Pausado' && it.when < agora;
+  const story = /story/i.test(it.formato);
+  const autoral = /autoral/i.test(it.origem);
+  el.innerHTML =
+    '<div class="prev' + (story ? ' story' : '') + '" id="prev-' + esc(it.id) + '">' +
+      (it.temArquivo ? '<span class="vazio">Carregando prévia…</span>' :
+      '<span class="vazio">' + (autoral ? 'Aguardando seu vídeo/foto em 02-Autoral<br>(nome começando com ' + esc(it.id) + ')' : 'A arte é gerada até 48 h antes') + '</span>') +
+    '</div>' +
+    '<div class="info">' +
+      '<div class="quando"><span class="lbl">' + esc(rotuloDia(it.when)) + '</span><span class="lbl">' + esc(String(it.data).slice(0, 5)) + ' · ' + esc(it.hora) + '</span></div>' +
+      '<div class="meta"><span>' + esc(it.formato) + '</span><span>' + esc(it.origem) + '</span><span>' + esc(it.id) + '</span>' +
+        (it.status ? '<span class="tag ' + (TAG[it.status] || '') + '">' + esc(it.status) + '</span>' : '') +
+        (vencido ? '<span class="tag atraso">Horário vencido</span>' : '') + '</div>' +
+      '<h3>' + esc(titulo(it)) + '</h3>' +
+      '<div class="meta"><span>' + esc(it.tpl) + '</span></div>' +
+      (it.legenda && it.legenda !== '—' ? '<p class="leg">' + esc(it.legenda) + '</p>' : '') +
+      (it.nota ? '<p class="nota">' + esc(it.nota) + '</p>' : '') +
+      (it.status === 'Publicado' && it.pubEm ? '<p class="ok">Publicado em ' + esc(it.pubEm) + (it.atraso && it.atraso !== 'no horário' ? ' · atraso ' + esc(it.atraso) : ' · no horário') + '</p>' : '') +
+      (it.link ? '<a class="meta" href="' + esc(it.link) + '" target="_blank" rel="noopener">Ver no Instagram ↗</a>' : '') +
+      (/sim/i.test(it.revisar) && editavel ? '<p class="nota">Marcada para revisar: escreva uma confirmação antes de aprovar.</p>' : '') +
+      (editavel ? '<textarea id="nota-' + esc(it.id) + '" placeholder="Nota (opcional): o que ajustar, ou confirmação"></textarea>' +
+        '<div class="acoes">' +
+          (podeAprovar ? '<button class="bt pri" data-a="aprovar">' + (vencido ? 'Aprovar e publicar' : 'Aprovar') + '</button>' : '') +
+          '<button class="bt amb" data-a="ajustar">Ajustar</button>' +
+          '<button class="bt" data-a="regerar">' + (autoral ? 'Buscar arquivo' : 'Gerar de novo') + '</button>' +
+          '<button class="bt perigo" data-a="cancelar">Cancelar</button>' +
+        '</div>' : '') +
+    '</div>';
+  el.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => acao(it.id, b.dataset.a, el)));
+  return el;
+}
+
+async function acao(id, a, el) {
+  const campo = $('nota-' + id); const nota = campo ? campo.value.trim() : '';
+  if (a === 'ajustar' && !nota) { toast('Escreva no campo o que precisa ajustar.', true); campo && campo.focus(); return; }
+  if (a === 'cancelar' && !confirmaCancelar(el)) return;
+  el.querySelectorAll('button').forEach(b => b.disabled = true);
+  delete S.prev[id];
+  try {
+    await api('acao', [id, a, nota]);
+    toast(a === 'aprovar' ? id + ' aprovado.' : a === 'regerar' ? id + ': gerando de novo.' : id + ': ' + a + ' registrado.');
+    await carregar();
+  } catch (e) { toast(e.message, true); el.querySelectorAll('button').forEach(b => b.disabled = false); }
+}
+function confirmaCancelar(el) {
+  const b = el.querySelector('[data-a="cancelar"]');
+  if (b.dataset.conf) return true;
+  b.dataset.conf = '1'; b.textContent = 'Confirmar cancelamento';
+  setTimeout(() => { if (b.isConnected) { delete b.dataset.conf; b.textContent = 'Cancelar'; } }, 4000);
+  return false;
+}
+
+async function proximaPrevia() {
+  if (S.carregandoPrev) return;
+  const id = S.fila.shift(); if (!id) return;
+  if (S.prev[id]) { mostrarPrevia(id, S.prev[id]); return proximaPrevia(); }
+  S.carregandoPrev = true;
+  try { const p = await api('preview', [id, 0]); S.prev[id] = p; mostrarPrevia(id, p); }
+  catch (e) { const b = $('prev-' + id); if (b) b.innerHTML = '<span class="vazio">Prévia indisponível</span>'; }
+  S.carregandoPrev = false; proximaPrevia();
+}
+function mostrarPrevia(id, p) {
+  const b = $('prev-' + id); if (!b) return;
+  if (p.img) {
+    b.innerHTML = '<img alt="Prévia ' + esc(p.nome) + ' de ' + esc(id) + '" src="' + p.img + '">' +
+      (p.n > 1 ? '<div class="nav"><button class="circ" aria-label="Anterior">‹</button><span>' + (p.idx + 1) + '/' + p.n + '</span><button class="circ" aria-label="Próxima">›</button></div>' : '') +
+      (p.video ? '<a class="video-link" href="' + esc(p.video) + '" target="_blank" rel="noopener">Ver vídeo ↗</a>' : '');
+    const bt = b.querySelectorAll('.nav button');
+    if (bt.length === 2) { bt[0].onclick = () => trocar(id, (p.idx - 1 + p.n) % p.n); bt[1].onclick = () => trocar(id, (p.idx + 1) % p.n); }
+  } else if (p.video) {
+    b.innerHTML = '<iframe title="Vídeo ' + esc(id) + '" src="' + esc(p.video) + '" allow="autoplay"></iframe>';
+  } else b.innerHTML = '<span class="vazio">Pasta sem arquivos</span>';
+}
+async function trocar(id, k) {
+  const b = $('prev-' + id); if (b) b.style.opacity = .5;
+  try { const p = await api('preview', [id, k]); S.prev[id] = p; mostrarPrevia(id, p); } catch (e) { toast(e.message, true); }
+  if (b) b.style.opacity = 1;
+}
+
+$('filtros').addEventListener('click', e => {
+  const b = e.target.closest('button[data-f]'); if (!b) return;
+  S.filtro = b.dataset.f;
+  document.querySelectorAll('#filtros button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  desenhar();
+});
+
+/* ── desempenho ── */
+async function carregarDesempenho(forcar) {
+  const b = $('b-atualizar');
+  if (forcar) { b.disabled = true; b.textContent = 'Buscando no Instagram…'; }
+  try { S.desemp = await api(forcar ? 'desempenhoAtualizar' : 'desempenho'); desenharDesempenho(); if (forcar) toast('Números atualizados.'); }
+  catch (e) { toast(e.message, true); }
+  if (forcar) { b.disabled = false; b.textContent = 'Atualizar agora'; }
+}
+$('b-atualizar').addEventListener('click', () => carregarDesempenho(true));
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+  S.metrica = b.dataset.m;
+  document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  desenharDesempenho();
+}));
+
+const diaISO = s => { const m = String(s).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : ''; };
+const fmt = n => n == null ? '—' : Number(n).toLocaleString('pt-BR');
+
+function desenharDesempenho() {
+  const d = S.desemp; if (!d) return;
+  const m = S.metrica;
+  const itens = d.itens.map(i => Object.assign({ iso: diaISO(i.dia) }, i)).filter(i => i.iso);
+  const dias = [...new Set(itens.map(i => i.iso))].sort();
+  // totais
+  $('totais').innerHTML = TIPOS.map(t => {
+    const lst = itens.filter(i => i.tipo === t);
+    const soma = lst.reduce((a, i) => a + (i[m] || 0), 0);
+    const semCurtida = m === 'curtidas' && t === 'Posts';
+    return '<div class="total"><span class="lbl"><i style="background:' + CORES[t] + '"></i>' + esc(t) + '</span><b>' + (semCurtida && !soma ? '—' : fmt(soma)) + '</b><small>' + lst.length + ' publicação(ões)' + (semCurtida ? ' · stories não têm curtidas na API' : '') + '</small></div>';
+  }).join('');
+  // gráfico
+  const series = TIPOS.map(t => ({
+    label: t,
+    data: dias.map(dia => { const l = itens.filter(i => i.tipo === t && i.iso === dia && i[m] != null); return l.length ? l.reduce((a, i) => a + i[m], 0) : null; }),
+    borderColor: CORES[t], backgroundColor: CORES[t], borderWidth: 2.2, tension: .32, spanGaps: true, pointRadius: 3.5, pointHoverRadius: 6
+  }));
+  const rot = dias.map(x => x.slice(8, 10) + '/' + x.slice(5, 7));
+  if (window.Chart) {
+    if (!S.graf) {
+      Chart.defaults.font.family = '"IBM Plex Mono", monospace'; Chart.defaults.font.size = 11; Chart.defaults.color = '#8D8A83';
+      S.graf = new Chart($('graf'), {
+        type: 'line', data: { labels: rot, datasets: series },
+        options: {
+          responsive: true, maintainAspectRatio: false, animation: { duration: 500 },
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 18 } },
+            tooltip: { backgroundColor: '#141413', padding: 12, callbacks: { label: c => ' ' + c.dataset.label + ': ' + fmt(c.parsed.y) } } },
+          scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: '#EEEBE5' }, ticks: { callback: v => fmt(v) } } }
+        }
+      });
+    } else { S.graf.data.labels = rot; S.graf.data.datasets = series; S.graf.update(); }
+  }
+  const ult = itens.map(i => i.atualizado).filter(Boolean).sort((a, b) => diaISO(b).localeCompare(diaISO(a)) || b.localeCompare(a))[0];
+  $('aviso-graf').textContent = (itens.length ? 'Uma linha por tipo; cada ponto soma as publicações do dia. ' : 'Sem publicações medidas ainda. ') +
+    'Atualiza sozinho a cada 10 min (stories enquanto estão no ar)' + (ult ? ' · última leitura ' + ult : '') + '.';
+  // tabela
+  const linhas = itens.slice().sort((a, b) => (b.iso + b.pubEm).localeCompare(a.iso + a.pubEm));
+  $('tabela').innerHTML = linhas.length ? linhas.map(i => '<tr><td>' + esc(i.pubEm || i.dia) + '</td><td><span class="ponto" style="background:' + CORES[i.tipo] + '"></span>' + esc(i.tipo) + ' · ' + esc(i.id) + '</td><td class="n">' + fmt(i.views) + '</td><td class="n">' + fmt(i.curtidas) + '</td><td>' + esc(i.atualizado || '—') + '</td><td>' + (i.link ? '<a href="' + esc(i.link) + '" target="_blank" rel="noopener">abrir ↗</a>' : '') + '</td></tr>').join('')
+    : '<tr><td colspan="6" style="color:var(--mute)">Nenhuma publicação ainda.</td></tr>';
+}
+
+/* ── ajustes ── */
+$('b-pausa').addEventListener('click', async () => {
+  try { await api('pausa', [!S.dados.pausa]); toast(S.dados.pausa ? 'Pausa desligada.' : 'Pausa ligada: nada será publicado.'); carregar(); } catch (e) { toast(e.message, true); }
+});
+$('b-run').addEventListener('click', async () => {
+  const b = $('b-run'); b.disabled = true; b.textContent = 'Rodando…';
+  try { aplicar(await api('rodar')); S.prev = {}; toast('Ciclo concluído.'); } catch (e) { toast(e.message, true); }
+  b.disabled = false; b.textContent = 'Rodar agora';
+});
+$('b-tok').addEventListener('click', async () => {
+  const t = $('tok').value.trim();
+  if (t.length < 20) { toast('Cole o token completo.', true); return; }
+  try { const r = await api('conectar', [t]); $('tok').value = ''; toast('Conectado: @' + r.conta); carregar(); } catch (e) { toast(e.message, true); }
+});
+
+/* ── início ── */
+S.sessao = guarda.ler();
+if (S.sessao) entrar();
+abertura.pronta.then(() => { if (!S.sessao) mostrarLogin(); });
+</script>
+</body>
+</html>
