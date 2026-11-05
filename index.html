@@ -76,8 +76,10 @@ header.topo{position:sticky;top:0;z-index:20;padding:0 var(--pad);max-width:var(
 .barra-topo{display:flex;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-top:0;min-height:72px;transition:box-shadow .3s,min-height .3s}
 header.rolou .barra-topo{box-shadow:0 10px 30px -18px rgba(20,20,19,.35);min-height:62px}
 .marca{display:flex;align-items:center;gap:12px;padding:0 22px;border-right:1px solid var(--line);white-space:nowrap;text-decoration:none}
-.marca .av{width:38px;height:38px;border-radius:50%;object-fit:cover;object-position:50% 22%;filter:grayscale(.2) contrast(1.05);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--line);transition:transform .4s var(--ease)}
+.marca .av{width:38px;height:38px;flex:none;display:block;border-radius:50%;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--line);transition:transform .4s var(--ease)}
+.marca .av .ponto{transform-box:fill-box;transform-origin:center;transition:transform .5s var(--ease)}
 .marca:hover .av{transform:rotate(-6deg) scale(1.06)}
+.marca:hover .av .ponto{transform:translateX(3px)}
 .marca .nome{display:grid;line-height:1}
 .marca .nome b{font:800 18px var(--f-h);letter-spacing:-.01em}
 .marca .nome b em{font-style:italic;font-weight:500;color:var(--ink2)}
@@ -115,14 +117,14 @@ nav.abas .n{display:inline-grid;place-items:center;min-width:18px;height:18px;bo
 
 main{max-width:var(--max);margin:0 auto;padding:0 var(--pad) 90px}
 
-/* ───────── hero com retrato ───────── */
+/* ───────── hero com imagem do estúdio ───────── */
 .hero{display:grid;grid-template-columns:1.3fr 1fr;border:1px solid var(--line);border-top:0;background:var(--card);overflow:hidden}
 .hero .esq{position:relative;padding:56px 40px 40px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:22px;min-height:380px;isolation:isolate}
-.retrato{position:absolute;right:0;bottom:0;height:100%;width:58%;z-index:-1;background:url(assets/leo-retrato.jpg) 60% 18%/cover no-repeat;mix-blend-mode:multiply;opacity:.9;
+.retrato{position:absolute;right:0;bottom:0;height:100%;width:58%;z-index:-1;background:url(assets/estudio.jpg) 55% 40%/cover no-repeat;filter:url(#mapa-cor);opacity:.95;
   -webkit-mask-image:linear-gradient(to left,#000 30%,transparent 92%);mask-image:linear-gradient(to left,#000 30%,transparent 92%);
   transform:scale(1.04);animation:respira 14s ease-in-out infinite alternate}
 @keyframes respira{to{transform:scale(1) translateX(-6px)}}
-.retrato-leg{position:absolute;right:22px;bottom:18px;font:500 9.5px var(--f-m);letter-spacing:.24em;text-transform:uppercase;color:var(--ink2);writing-mode:vertical-rl;transform:rotate(180deg)}
+.retrato-leg{position:absolute;right:22px;bottom:18px;font:500 9.5px var(--f-m);letter-spacing:.24em;text-transform:uppercase;color:rgba(242,238,230,.78);text-shadow:0 1px 8px rgba(0,0,0,.5);writing-mode:vertical-rl;transform:rotate(180deg)}
 .hero h2{font:800 clamp(40px,6vw,84px)/.95 var(--f-h);letter-spacing:-.035em;margin:0}
 .hero h2 span{display:block;overflow:hidden}
 .hero h2 span i{display:block;font-style:normal;transform:translateY(105%);animation:entra .9s var(--ease) forwards}
@@ -439,7 +441,7 @@ dialog.modal::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(3px)}
   <header class="topo" id="topo">
     <div class="barra-topo">
       <a class="marca" href="#" id="marca" aria-label="Fábrica de posts by LeoGomes, início">
-        <img class="av" src="assets/leo-avatar.jpg" alt="">
+        <svg class="av" viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="19" fill="#141413"/><path d="M9 19.5h20" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity=".55"/><path d="M9 16v7M29 16v7" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity=".55"/><circle class="ponto" cx="19" cy="19.5" r="4.2" fill="#D9692B"/></svg>
         <span class="nome"><b>FÁBRICA <em>de posts</em><i>.</i></b><small>by LeoGomes</small></span>
       </a>
       <nav class="abas" id="abas" aria-label="Seções">
@@ -463,7 +465,7 @@ dialog.modal::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(3px)}
       <div class="hero">
         <div class="esq">
           <div class="retrato" aria-hidden="true"></div>
-          <span class="retrato-leg" aria-hidden="true">Leo Gomes · curadoria e voz</span>
+          <span class="retrato-leg" aria-hidden="true">Estúdio · arte, aprovação e publicação</span>
           <span class="lbl">Estúdio · @opinador_razoavel</span>
           <h2><span><i>Aprovar.</i></span><span><i>Publicar.</i></span><span><i>Medir.</i></span></h2>
           <p class="sub">A Fábrica prepara, você decide, o Instagram recebe. Nada sai sem a sua aprovação.</p>

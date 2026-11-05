@@ -4,4 +4,4 @@ Painel da Fábrica de Post (@opinador_razoavel): aprovação, publicação e des
 
 - Site estático (`index.html`) publicado pelo GitHub Pages.
 - Fala só com o projeto Apps Script **Fábrica · API**, que confere a senha e repassa ao projeto principal com o login do dono.
-- Nenhuma senha, token ou dado fica neste repositório.
+- Nenhuma senha, token, foto pessoal ou dado fica neste repositório. A imagem do topo (`assets/estudio.jpg`) é um recorte da arte de abertura do produto.
