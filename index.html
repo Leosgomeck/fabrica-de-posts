@@ -27,10 +27,6 @@ button,input,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 .lbl{font:500 11px/1 var(--f-m);letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
 
-.guias{position:fixed;inset:0;pointer-events:none;z-index:0;display:grid;grid-template-columns:repeat(4,1fr);max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
-.guias i{border-left:1px solid var(--guide)}.guias i:last-child{border-right:1px solid var(--guide)}
-@media (max-width:760px){.guias{grid-template-columns:repeat(2,1fr)}.guias i:nth-child(n+3){display:none}}
-
 /* revelar ao rolar */
 .rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .rv.vis{opacity:1;transform:none}
@@ -70,52 +66,206 @@ button,input,textarea{font:inherit;color:inherit}
 #login label.lembrar input{accent-color:var(--ink);width:16px;height:16px;margin:0}
 @keyframes sobe{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
-/* ───────── topo ───────── */
-.app{position:relative;z-index:1}
-header.topo{position:sticky;top:0;z-index:20;padding:0 var(--pad);max-width:var(--max);margin:0 auto;transition:transform .3s}
-.barra-topo{display:flex;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-top:0;min-height:72px;transition:box-shadow .3s,min-height .3s}
-header.rolou .barra-topo{box-shadow:0 10px 30px -18px rgba(20,20,19,.35);min-height:62px}
-.marca{display:flex;align-items:center;gap:12px;padding:0 22px;border-right:1px solid var(--line);white-space:nowrap;text-decoration:none}
-.marca .av{width:38px;height:38px;flex:none;display:block;border-radius:50%;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--line);transition:transform .4s var(--ease)}
+/* ───────── estrutura: barra lateral + área de trabalho ───────── */
+.app{position:relative;z-index:1;display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100vh}
+.lado{position:sticky;top:0;height:100vh;background:#0F0F0E;color:#E9E5DC;display:flex;flex-direction:column;padding:22px 14px 18px;gap:22px;overflow-y:auto;z-index:20}
+.lado::after{content:"";position:absolute;inset:0 0 0 auto;width:1px;background:linear-gradient(#0F0F0E,rgba(217,105,43,.45),#0F0F0E)}
+.marca{display:flex;align-items:center;gap:12px;padding:4px 8px 18px;border-bottom:1px solid rgba(255,255,255,.08);text-decoration:none;color:inherit}
+.marca .av{width:40px;height:40px;flex:none;display:block;border-radius:50%;box-shadow:0 0 0 1px rgba(255,255,255,.12);transition:transform .4s var(--ease)}
 .marca .av .ponto{transform-box:fill-box;transform-origin:center;transition:transform .5s var(--ease)}
-.marca:hover .av{transform:rotate(-6deg) scale(1.06)}
-.marca:hover .av .ponto{transform:translateX(3px)}
+.marca:hover .av{transform:rotate(-6deg) scale(1.06)}.marca:hover .av .ponto{transform:translateX(3px)}
 .marca .nome{display:grid;line-height:1}
-.marca .nome b{font:800 18px var(--f-h);letter-spacing:-.01em}
-.marca .nome b em{font-style:italic;font-weight:500;color:var(--ink2)}
+.marca .nome b{font:800 17px var(--f-h);letter-spacing:-.01em;color:#fff}
+.marca .nome b em{font-style:italic;font-weight:500;color:#B8B3A8}
 .marca .nome b i{font-style:normal;color:var(--amber)}
-.marca .nome small{font:500 9.5px var(--f-m);letter-spacing:.24em;text-transform:uppercase;color:var(--mute);margin-top:5px}
-.menu-btn{width:68px;border:0;border-left:1px solid var(--line);background:transparent;cursor:pointer;display:none;place-items:center;margin-left:auto}
-.menu-btn span,.menu-btn span::before,.menu-btn span::after{display:block;width:22px;height:1.5px;background:var(--ink);position:relative;content:"";transition:.3s}
-.menu-btn span::before{position:absolute;top:-7px}.menu-btn span::after{position:absolute;top:7px}
-.menu-btn[aria-expanded="true"] span{background:transparent}
-.menu-btn[aria-expanded="true"] span::before{top:0;transform:rotate(45deg)}
-.menu-btn[aria-expanded="true"] span::after{top:0;transform:rotate(-45deg)}
-nav.abas{display:flex;margin-left:auto}
-nav.abas button{border:0;border-left:1px solid var(--line);background:transparent;padding:0 26px;font:500 11px var(--f-m);letter-spacing:.24em;text-transform:uppercase;cursor:pointer;color:var(--ink2);position:relative;transition:color .2s}
-nav.abas button:hover{color:var(--ink)}
-nav.abas button::after{content:"";position:absolute;left:26px;right:26px;bottom:-1px;height:2px;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease)}
-nav.abas button[aria-current="page"]{color:var(--ink)}
-nav.abas button[aria-current="page"]::after{transform:scaleX(1)}
-nav.abas .n{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:9px;background:var(--amber);color:#fff;font-size:10px;letter-spacing:0;margin-left:8px;padding:0 5px;animation:pulsa 2.4s ease-in-out infinite}
+.marca .nome small{font:500 9px var(--f-m);letter-spacing:.24em;text-transform:uppercase;color:#8D8A83;margin-top:6px}
+nav.abas{display:grid;gap:2px}
+nav.abas .grupo{font:500 9px var(--f-m);letter-spacing:.24em;text-transform:uppercase;color:#6E6B65;padding:14px 12px 6px}
+nav.abas button{display:flex;align-items:center;gap:12px;border:0;background:transparent;color:#B8B3A8;padding:11px 12px;border-radius:10px;font:500 14px var(--f-b);cursor:pointer;text-align:left;position:relative;transition:background .2s,color .2s}
+nav.abas button svg{width:18px;height:18px;flex:none;opacity:.8}
+nav.abas button:hover{background:rgba(255,255,255,.05);color:#fff}
+nav.abas button[aria-current="page"]{background:rgba(217,105,43,.14);color:#fff}
+nav.abas button[aria-current="page"]::before{content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--amber)}
+nav.abas button[aria-current="page"] svg{opacity:1;color:var(--amber)}
+nav.abas .n{margin-left:auto;display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:10px;background:var(--amber);color:#fff;font:600 10.5px var(--f-m);padding:0 6px;animation:pulsa 2.4s ease-in-out infinite}
+nav.abas .n.suave{background:rgba(255,255,255,.12);animation:none}
 @keyframes pulsa{50%{box-shadow:0 0 0 5px rgba(217,105,43,.18)}}
-.sinais{display:flex;gap:16px;align-items:center;padding:0 22px;border-left:1px solid var(--line)}
-.sinal{display:flex;gap:7px;align-items:center;font:500 10px var(--f-m);letter-spacing:.16em;color:var(--mute);text-transform:uppercase;white-space:nowrap}
-.sinal i{width:7px;height:7px;border-radius:50%;background:var(--mute)}
-.sinal.on i{background:#3B8A1F;animation:vivo 2s ease-in-out infinite}.sinal.off i{background:var(--err)}
-@keyframes vivo{50%{box-shadow:0 0 0 4px rgba(59,138,31,.18)}}
-@media (max-width:1060px){.sinais{display:none}}
-@media (max-width:760px){
-  .menu-btn{display:grid}
-  nav.abas{position:absolute;left:var(--pad);right:var(--pad);top:100%;flex-direction:column;background:var(--card);border:1px solid var(--line);border-top:0;display:none}
-  nav.abas.aberto{display:flex;animation:sobe .3s var(--ease)}
-  nav.abas button{border-left:0;border-top:1px solid var(--line);padding:18px 22px;text-align:left}
-  nav.abas button::after{left:0;right:auto;top:0;bottom:0;width:3px;height:auto;transform:scaleY(0)}
-  nav.abas button[aria-current="page"]::after{transform:scaleY(1)}
-  .marca{flex:1;border-right:0;padding:0 16px}
+.sinais{margin-top:auto;display:grid;gap:10px;padding:14px 12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.02)}
+.sinal{display:flex;gap:9px;align-items:center;font:500 10px var(--f-m);letter-spacing:.14em;color:#B8B3A8;text-transform:uppercase;white-space:nowrap}
+.sinal i{width:7px;height:7px;border-radius:50%;background:#6E6B65;flex:none}
+.sinal.on i{background:#5DBB3A;animation:vivo 2s ease-in-out infinite}.sinal.off i{background:#E05A4F}
+@keyframes vivo{50%{box-shadow:0 0 0 4px rgba(93,187,58,.2)}}
+.relogio{font:600 22px var(--f-h);color:#fff;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.relogio small{display:block;font:500 9.5px var(--f-m);letter-spacing:.2em;color:#8D8A83;text-transform:uppercase;margin-top:4px}
+.topo-m{display:none}
+main{min-width:0;padding:28px clamp(16px,3.4vw,48px) 90px;max-width:1440px;width:100%}
+.cabeca{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-end;justify-content:space-between;margin:6px 0 22px}
+.cabeca h1{font:800 clamp(30px,3.6vw,46px)/1 var(--f-h);letter-spacing:-.03em;margin:8px 0 0}
+.cabeca h1 i{font-style:normal;color:var(--amber)}
+.cabeca .acoes-topo{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.guia{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:12px;padding:12px 16px;margin:0 0 22px;font-size:13.5px;color:var(--ink2)}
+.guia b{color:var(--ink);font-weight:600}
+.guia .x{margin-left:auto;border:0;background:none;cursor:pointer;color:var(--mute);font-size:16px;line-height:1;padding:2px 4px}
+@media (max-width:1000px){
+  .app{grid-template-columns:1fr}
+  .lado{position:fixed;left:0;right:0;bottom:0;top:auto;height:auto;flex-direction:row;padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:0;border-top:1px solid rgba(255,255,255,.08);overflow:visible}
+  .lado::after,.lado .marca,.lado .sinais,nav.abas .grupo{display:none}
+  nav.abas{display:flex;width:100%;overflow-x:auto;scrollbar-width:none;gap:2px}
+  nav.abas button{flex:1 1 0;flex-direction:column;gap:4px;padding:8px 2px;font-size:10px;min-width:0;align-items:center}
+  nav.abas button[aria-current="page"]::before{left:22%;right:22%;top:-6px;bottom:auto;width:auto;height:3px;border-radius:0 0 3px 3px}
+  nav.abas .n{position:absolute;top:2px;right:8px;margin:0;min-width:17px;height:17px;font-size:9.5px;padding:0 4px}
+  .topo-m{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:15;background:rgba(244,242,238,.92);backdrop-filter:blur(10px);padding:10px 16px;border-bottom:1px solid var(--line)}
+  .topo-m .marca{border:0;padding:0;color:var(--ink)}.topo-m .marca .nome b{color:var(--ink)}.topo-m .marca .av{width:32px;height:32px}
+  .topo-m .sinal{margin-left:auto;color:var(--ink2)}
+  main{padding:18px 16px 110px}
 }
 
-main{max-width:var(--max);margin:0 auto;padding:0 var(--pad) 90px}
+/* ───────── hoje ───────── */
+.hoje-topo{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.prox{position:relative;overflow:hidden;background:#141413;color:#F2EEE6;border-radius:20px;padding:26px 28px;display:grid;gap:14px;align-content:start;min-height:250px;isolation:isolate}
+.prox::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(80% 120% at 100% 0%,rgba(217,105,43,.35),transparent 60%),url(assets/estudio.jpg) right center/cover no-repeat;opacity:.55;filter:url(#mapa-cor);-webkit-mask-image:linear-gradient(to left,#000 10%,transparent 75%);mask-image:linear-gradient(to left,#000 10%,transparent 75%)}
+.prox .lbl{color:#B8B3A8}
+.prox .cd{font:700 clamp(40px,5.4vw,68px)/1 var(--f-h);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.prox .cd small{font:500 12px var(--f-m);letter-spacing:.16em;color:#B8B3A8;margin-left:8px;text-transform:uppercase}
+.prox h3{margin:0;font:600 20px/1.25 var(--f-h);max-width:30ch}
+.prox .meta{display:flex;flex-wrap:wrap;gap:8px}
+.prox .meta span{font:500 10px var(--f-m);letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08)}
+.prox .meta span.alerta{background:var(--amber);color:#fff}
+.prox .bt{border-color:#F2EEE6;color:#F2EEE6}.prox .bt:hover{background:#F2EEE6;color:#141413}
+.prox .bt.pri{background:var(--amber);border-color:var(--amber);color:#fff}.prox .bt.pri:hover{background:#C25A20}
+.mini-kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mk{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;display:grid;gap:8px;cursor:pointer;text-align:left;transition:transform .3s var(--ease),box-shadow .3s,border-color .3s;font:inherit;color:inherit}
+.mk:hover{transform:translateY(-3px);box-shadow:0 16px 30px -22px rgba(20,20,19,.5);border-color:#CFC9BD}
+.mk b{font:700 38px/1 var(--f-h);letter-spacing:-.03em}
+.mk small{font-size:12px;color:var(--mute)}
+.mk.alerta b{color:var(--amber)}.mk.erro b{color:var(--err)}
+.cartao2{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 24px;display:grid;gap:16px;margin-bottom:16px}
+.cartao2 > header{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.cartao2 h2{font:700 19px/1.2 var(--f-h);margin:0;letter-spacing:-.01em;display:flex;gap:10px;align-items:baseline}
+.cartao2 h2 .lbl{color:var(--amber)}
+.cartao2 .dica{margin:0;font-size:13px;color:var(--ink2)}
+.grade2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:1100px){.hoje-topo,.grade2{grid-template-columns:1fr}}
+/* ritmo */
+.ritmo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rt{border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:10px;background:#FDFCFA}
+.rt .topo{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.rt .topo b{font:700 26px/1 var(--f-h);letter-spacing:-.02em}
+.rt .topo b small{font:500 13px var(--f-b);color:var(--mute);letter-spacing:0}
+.rt .barras{display:flex;gap:4px}
+.rt .barras i{flex:1;height:8px;border-radius:4px;background:#E9E5DD;transition:background .5s var(--ease)}
+.rt .barras i.ok{background:var(--c)}
+.rt .falta{font:500 10px var(--f-m);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.rt.completo .falta{color:var(--ok)}
+.rt.c-story{--c:#141413}.rt.c-reel{--c:var(--amber)}.rt.c-carrossel{--c:var(--sky)}
+@media (max-width:640px){.ritmo{grid-template-columns:1fr}}
+/* fila de ações */
+.tarefas{display:grid;gap:8px}
+.tarefa{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;animation:aparece .5s var(--ease) both;animation-delay:calc(var(--i,0) * 50ms);opacity:0}
+.tarefa .bola{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--sky2);color:var(--info)}
+.tarefa .bola svg{width:17px;height:17px}
+.tarefa.urg .bola{background:var(--errbg);color:var(--err)}
+.tarefa.vid .bola{background:var(--amber2);color:var(--amber)}
+.tarefa b{font:600 14px/1.3 var(--f-h);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tarefa small{font:500 10px var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.tarefa .acoes{margin:0;padding:0;flex-wrap:nowrap}
+.tarefa .bt{padding:8px 14px;font-size:10px}
+.vazio-ok{display:flex;gap:12px;align-items:center;padding:18px;border:1px dashed #BFD9B4;border-radius:14px;color:var(--ok);background:var(--okbg);font-size:14px}
+@media (max-width:560px){.tarefa{grid-template-columns:auto minmax(0,1fr)}.tarefa .acoes{grid-column:1/-1}}
+/* propostas */
+.props{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.prop{border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:grid;gap:10px;align-content:start;background:#fff;position:relative;overflow:hidden;animation:aparece .5s var(--ease) both;animation-delay:calc(var(--i,0) * 60ms);opacity:0;transition:transform .3s var(--ease),box-shadow .3s}
+.prop:hover{transform:translateY(-3px);box-shadow:0 18px 32px -24px rgba(20,20,19,.5)}
+.prop::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c,var(--amber))}
+.prop.alta{--c:var(--err)}.prop.media{--c:var(--amber)}.prop.baixa{--c:var(--sky)}
+.prop .lbl{display:flex;gap:8px;align-items:center}
+.prop b{font:650 15.5px/1.3 var(--f-h)}
+.prop p{margin:0;font-size:13px;color:var(--ink2)}
+.prop .dado{font:500 11px/1.45 var(--f-m);color:var(--ink);background:#F6F3EE;border-radius:8px;padding:8px 10px}
+.prop .acoes{margin-top:2px}
+.prop .acoes .bt{flex:0 1 auto}
+.prop.feito{opacity:.55}
+/* como funciona compacto */
+.processo{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.passo{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:4px;align-content:start}
+.passo .lbl{color:var(--amber)}
+.passo b{font:650 14px/1.25 var(--f-h)}
+.passo p{margin:0;font-size:12.5px;color:var(--ink2)}
+@media (max-width:900px){.processo{grid-template-columns:1fr 1fr}}
+
+/* ───────── pauta (calendário semanal) ───────── */
+.cal-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-nav{display:flex;gap:6px;align-items:center}
+.cal-nav .circ2{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:18px;display:grid;place-items:center;transition:.2s}
+.cal-nav .circ2:hover{border-color:var(--ink)}
+.cal-nav h2{font:700 20px var(--f-h);margin:0 8px;letter-spacing:-.01em;min-width:170px}
+.legenda{display:flex;gap:14px;flex-wrap:wrap;font:500 10px var(--f-m);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+.legenda i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.dia{background:var(--card);border:1px solid var(--line);border-radius:14px;min-height:300px;display:flex;flex-direction:column;overflow:hidden}
+.dia header{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline}
+.dia header b{font:700 20px var(--f-h);letter-spacing:-.02em}
+.dia header span{font:500 10px var(--f-m);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.dia.hoje{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber)}
+.dia.hoje header{background:var(--amber2)}
+.dia.passado{opacity:.62}
+.dia .itens{padding:8px;display:grid;gap:6px;align-content:start;flex:1}
+.chip2{border:0;text-align:left;cursor:pointer;border-radius:10px;padding:8px 9px 8px 11px;background:#F6F3EE;display:grid;gap:3px;position:relative;font:inherit;color:inherit;transition:transform .2s var(--ease),box-shadow .2s;animation:aparece .4s var(--ease) both;opacity:0}
+.chip2::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:0 3px 3px 0;background:var(--c)}
+.chip2:hover{transform:translateY(-2px);box-shadow:0 10px 20px -14px rgba(20,20,19,.5)}
+.chip2 .l1{display:flex;gap:6px;align-items:center;font:500 9.5px var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.chip2 .l1 i{width:6px;height:6px;border-radius:50%;background:var(--s,var(--mute));margin-left:auto;flex:none}
+.chip2 .l2{font:600 12px/1.3 var(--f-h);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.chip2.f-story{--c:#141413}.chip2.f-reel{--c:var(--amber)}.chip2.f-carrossel{--c:var(--sky)}
+.chip2.s-pub{opacity:.6}.chip2.s-pub .l2{text-decoration:none}
+.chip2.s-pausa{opacity:.45}.chip2.s-pausa .l2{text-decoration:line-through}
+.chip2.s-aguarda{--s:var(--sky)}.chip2.s-aprov{--s:#3B8A1F}.chip2.s-erro{--s:var(--err)}.chip2.s-pub{--s:var(--ink)}
+.falta2{border:1px dashed #CFC9BD;border-radius:10px;padding:8px 10px;font:500 9.5px var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);background:transparent;cursor:pointer;text-align:left;transition:.2s}
+.falta2:hover{border-color:var(--amber);color:var(--amber)}
+@media (max-width:1000px){.cal{grid-template-columns:1fr}.dia{min-height:0}.dia .itens{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}.dia.passado{display:none}}
+/* gaveta */
+dialog.gaveta{margin:0 0 0 auto;height:100vh;max-height:100vh;width:min(440px,100%);border:0;padding:0;background:var(--card);color:var(--ink)}
+dialog.gaveta[open]{animation:entraLado .35s var(--ease)}
+@keyframes entraLado{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+dialog.gaveta::backdrop{background:rgba(10,10,9,.5);backdrop-filter:blur(2px)}
+.gaveta .in{display:grid;gap:16px;padding:26px 26px 30px}
+.gaveta h3{font:700 22px/1.2 var(--f-h);margin:0;letter-spacing:-.02em}
+.gaveta .thumb{max-width:260px}
+.gaveta dl{margin:0;display:grid;grid-template-columns:110px 1fr;gap:8px 12px;font-size:13.5px}
+.gaveta dt{font:500 9.5px var(--f-m);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);padding-top:3px}
+.gaveta dd{margin:0}
+.gaveta .acoes{gap:8px}.gaveta .acoes .bt{flex:0 1 auto}
+.gaveta .fechar{position:absolute;top:16px;right:16px}
+.gaveta .in{padding-top:30px}
+.prop .acoes .bt,.tarefa .acoes .bt,.gaveta .acoes .bt,.peca .acoes .bt,.exp .acoes .bt,.prox .acoes .bt{flex:0 1 auto;padding:9px 14px;font-size:10px}
+/* ritmo nos ajustes */
+.rt-edit{display:grid;gap:12px}
+.rt-linha{display:grid;grid-template-columns:110px auto minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.rt-linha b{font:600 14px var(--f-h)}
+.passo-n{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.passo-n button{border:0;background:#fff;width:30px;height:30px;cursor:pointer;font-size:15px}
+.passo-n button:hover{background:#F3F0EA}
+.passo-n span{min-width:28px;text-align:center;font:600 14px var(--f-h)}
+.dias7{display:flex;gap:4px;flex-wrap:wrap}
+.dias7 button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font:600 11px var(--f-m)}
+.dias7 button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.rt-linha input[type=time]{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:13px var(--f-m);background:#FDFCFA;width:auto}
+@media (max-width:640px){.rt-linha{grid-template-columns:1fr 1fr}.rt-linha .dias7{grid-column:1/-1}}
+.ajuste .rt-edit{grid-column:1/-1}
+.ajuste.largo{grid-column:1/-1}
+.ajuste.largo .acoes .bt{flex:0 1 auto;padding:10px 18px;font-size:10.5px}
+/* análise: botões de aplicar */
+.peca .acoes,.exp .acoes{margin-top:4px}
+.peca .acoes .bt,.exp .acoes .bt{flex:0 1 auto;padding:8px 12px;font-size:9.5px}
+.modal select{border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:14px var(--f-b);background:#FDFCFA;color:var(--ink)}
+
+.area{min-width:0}
+.guia svg{width:18px;height:18px;color:var(--amber);flex:none;margin-top:1px}
+.vista > .hero:first-child,.vista > .painel:first-child{border-top:1px solid var(--line)}
+.vista > .painel:first-child{border-radius:20px 20px 0 0}
+.hero{border-top:1px solid var(--line);border-radius:20px 20px 0 0}
+.hero .esq{min-height:300px;padding:44px 36px 32px}
+.vista{animation:sobe .45s var(--ease) both}
 
 /* ───────── hero com imagem do estúdio ───────── */
 .hero{display:grid;grid-template-columns:1.3fr 1fr;border:1px solid var(--line);border-top:0;background:var(--card);overflow:hidden}
@@ -146,16 +296,6 @@ main{max-width:var(--max);margin:0 auto;padding:0 var(--pad) 90px}
 .fita:hover .trilho{animation-play-state:paused}
 .fita .trilho span b{color:var(--amber);font-weight:500;margin-right:10px}
 @keyframes corre{to{transform:translateX(-50%)}}
-
-/* como funciona */
-.processo{display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid var(--line);margin-top:0}
-.passo{background:var(--card);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 22px;display:grid;gap:6px;align-content:start;position:relative;overflow:hidden}
-.passo::before{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease)}
-.passo:hover::before{transform:scaleX(1)}
-.passo .lbl{color:var(--amber)}
-.passo b{font:650 16px/1.25 var(--f-h)}
-.passo p{margin:0;font-size:13px;color:var(--ink2)}
-@media (max-width:900px){.processo{grid-template-columns:1fr 1fr}}
 
 /* ───────── filtros ───────── */
 .faixa{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:30px 0 18px}
@@ -407,6 +547,13 @@ dialog.modal::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(3px)}
   <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
   <symbol id="i-vid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="M16 10l5-3v10l-5-3"/></symbol>
+  <symbol id="i-hoje" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-grade" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-graf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19h16"/><path d="M5 15l4-5 4 3 6-7"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18"/></symbol>
+  <symbol id="i-paleta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.4 0 2-1 1.4-2.2-.7-1.4.3-2.8 1.8-2.8H18a2.5 2.5 0 0 0 2.5-2.5A8.5 8.5 0 0 0 12 3.5z"/><circle cx="8" cy="11" r="1.2" fill="currentColor"/><circle cx="12" cy="7.5" r="1.2" fill="currentColor"/><circle cx="16" cy="10" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-ajuste" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/></symbol>
   <symbol id="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
 </svg>
 
@@ -421,7 +568,6 @@ dialog.modal::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(3px)}
   <span class="pular">toque para pular</span>
 </div>
 
-<div class="guias" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 
 <div id="login" hidden>
   <div class="fundo"><img alt="" src="https://lh3.googleusercontent.com/d/15vCL5GKD19S8gkjWhaFZCZXVyWOucfjs"></div>
@@ -438,30 +584,92 @@ dialog.modal::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(3px)}
 </div>
 
 <div class="app" id="app" hidden>
-  <header class="topo" id="topo">
-    <div class="barra-topo">
-      <a class="marca" href="#" id="marca" aria-label="Fábrica de posts by LeoGomes, início">
-        <svg class="av" viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="19" fill="#141413"/><path d="M9 19.5h20" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity=".55"/><path d="M9 16v7M29 16v7" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity=".55"/><circle class="ponto" cx="19" cy="19.5" r="4.2" fill="#D9692B"/></svg>
-        <span class="nome"><b>FÁBRICA <em>de posts</em><i>.</i></b><small>by LeoGomes</small></span>
-      </a>
-      <nav class="abas" id="abas" aria-label="Seções">
-        <button type="button" data-v="estudio" aria-current="page">Estúdio<span class="n" id="n-menu" hidden></span></button>
-        <button type="button" data-v="desempenho">Desempenho</button>
-        <button type="button" data-v="analise">Análise</button>
-        <button type="button" data-v="estilo">Estilo</button>
-        <button type="button" data-v="ajustes">Ajustes</button>
-      </nav>
-      <div class="sinais">
-        <span class="sinal" id="s-ig"><i></i><span>Instagram</span></span>
-        <span class="sinal" id="s-ciclo"><i></i><span>Ciclo</span></span>
-      </div>
-      <button class="menu-btn" id="menu-btn" aria-label="Abrir menu" aria-expanded="false"><span></span></button>
+  <aside class="lado" id="lado">
+    <a class="marca" href="#" id="marca" aria-label="Fábrica de posts by LeoGomes, início">
+      <svg class="av" viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="19" fill="#1E1E1C"/><path d="M9 19.5h20" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity=".55"/><path d="M9 16v7M29 16v7" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity=".55"/><circle class="ponto" cx="19" cy="19.5" r="4.2" fill="#D9692B"/></svg>
+      <span class="nome"><b>FÁBRICA <em>de posts</em><i>.</i></b><small>by LeoGomes</small></span>
+    </a>
+    <nav class="abas" id="abas" aria-label="Seções">
+      <span class="grupo">Operação</span>
+      <button type="button" data-v="hoje" aria-current="page"><svg aria-hidden="true"><use href="#i-hoje"/></svg><span>Hoje</span><span class="n" id="n-hoje" hidden></span></button>
+      <button type="button" data-v="pauta"><svg aria-hidden="true"><use href="#i-cal"/></svg><span>Pauta</span></button>
+      <button type="button" data-v="estudio"><svg aria-hidden="true"><use href="#i-grade"/></svg><span>Estúdio</span><span class="n" id="n-menu" hidden></span></button>
+      <span class="grupo">Crescimento</span>
+      <button type="button" data-v="desempenho"><svg aria-hidden="true"><use href="#i-graf"/></svg><span>Números</span></button>
+      <button type="button" data-v="analise"><svg aria-hidden="true"><use href="#i-spark"/></svg><span>Análise</span></button>
+      <span class="grupo">Configuração</span>
+      <button type="button" data-v="estilo"><svg aria-hidden="true"><use href="#i-paleta"/></svg><span>Estilo</span></button>
+      <button type="button" data-v="ajustes"><svg aria-hidden="true"><use href="#i-ajuste"/></svg><span>Ajustes</span></button>
+    </nav>
+    <div class="sinais">
+      <div class="relogio" id="relogio">--:--<small id="relogio-dia">—</small></div>
+      <span class="sinal" id="s-ig"><i></i><span>Instagram</span></span>
+      <span class="sinal" id="s-ciclo"><i></i><span>Ciclo</span></span>
     </div>
-  </header>
+  </aside>
 
+  <div class="area">
+  <div class="topo-m">
+    <a class="marca" href="#" id="marca-m"><svg class="av" viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="19" fill="#1E1E1C"/><path d="M9 19.5h20" stroke="#F2EEE6" stroke-width="1.6" stroke-linecap="round" opacity=".55"/><circle cx="19" cy="19.5" r="4.2" fill="#D9692B"/></svg><span class="nome"><b>FÁBRICA <em>de posts</em><i>.</i></b><small>by LeoGomes</small></span></a>
+    <span class="sinal" id="s-ig-m"><i></i><span>IG</span></span>
+  </div>
   <main>
+    <!-- HOJE -->
+    <section class="vista" id="v-hoje">
+      <div class="cabeca">
+        <div><span class="lbl" id="hoje-data">Hoje</span><h1 id="hoje-tit">Bom dia<i>.</i></h1></div>
+        <div class="acoes-topo"><button class="bt" id="b-hoje-rodar">Rodar ciclo agora</button><button class="bt pri" id="b-novo-reel2">+ Novo reel</button></div>
+      </div>
+      <div class="guia" data-guia="hoje"><span><svg aria-hidden="true"><use href="#i-info"/></svg></span><span><b>Comece por aqui.</b> 1) Resolva a fila de ações · 2) mantenha o ritmo da semana completo · 3) aplique as propostas de melhora com um clique. Nada é publicado sem a sua aprovação.</span><button class="x" aria-label="Esconder dica">×</button></div>
+      <div class="hoje-topo">
+        <div class="prox" id="prox"><span class="lbl">Próxima publicação</span><div class="cd" id="prox-cd">--</div><h3 id="prox-tit">Carregando…</h3><div class="meta" id="prox-meta"></div><div class="acoes" id="prox-acoes"></div></div>
+        <div class="mini-kpis">
+          <button class="mk alerta" data-ir="estudio" data-f="aprovar"><span class="lbl">Para aprovar</span><b id="st-aprovar" data-n="0">–</b><small>abrir no Estúdio →</small></button>
+          <button class="mk" data-ir="estudio" data-f="aprovados"><span class="lbl">Na fila</span><b id="st-fila" data-n="0">–</b><small>saem sozinhos no horário</small></button>
+          <button class="mk erro" data-ir="estudio" data-f="todos"><span class="lbl">Atrasados</span><b id="st-atraso" data-n="0">–</b><small>gerar de novo ou reagendar</small></button>
+          <button class="mk" data-ir="desempenho"><span class="lbl">Publicados · 7 dias</span><b id="st-pub" data-n="0">–</b><small>ver números →</small></button>
+        </div>
+      </div>
+      <div class="cartao2">
+        <header><h2><span class="lbl">01</span>Fila de ações</h2><span class="lbl" id="fila-n"></span></header>
+        <div class="tarefas" id="tarefas"></div>
+      </div>
+      <div class="cartao2">
+        <header><h2><span class="lbl">02</span>Ritmo da semana</h2>
+          <div class="acoes-topo" style="display:flex;gap:8px;flex-wrap:wrap"><button class="bt" data-ir="pauta">Ver pauta</button><button class="bt amb" id="b-completar1">Completar esta semana</button><button class="bt pri" id="b-completar4">Planejar 4 semanas</button></div></header>
+        <p class="dica" id="ritmo-dica">Meta por semana: 7 stories, 2 reels e 3 carrosséis.</p>
+        <div class="ritmo" id="ritmo-hoje"></div>
+      </div>
+      <div class="cartao2">
+        <header><h2><span class="lbl">03</span>Propostas de melhora</h2><span class="lbl">baseadas nos seus números reais</span></header>
+        <p class="dica">Cada proposta mostra o dado que a justifica. <b>Aplicar</b> executa a ação na hora (cria a peça na pauta com "revisar antes", registra o teste ou copia o texto). <b>Dispensar</b> esconde por 7 dias.</p>
+        <div class="props" id="props"></div>
+      </div>
+      <div class="processo">
+        <div class="passo"><span class="lbl">01 · Fábrica</span><b>Gera a arte 48 h antes</b><p>Stories, carrosséis e capas de reel saem prontos para revisar.</p></div>
+        <div class="passo"><span class="lbl">02 · Você</span><b>Aprova ou pede ajuste</b><p>Reel e story autorais: envie o vídeo pelo card ou pela fila.</p></div>
+        <div class="passo"><span class="lbl">03 · Instagram</span><b>Publica sozinho no horário</b><p>O Facebook recebe pelo compartilhamento automático.</p></div>
+        <div class="passo"><span class="lbl">04 · Atrasou?</span><b>Gere de novo ou reagende</b><p>Arte vencida: gerar de novo. Faltou vídeo: reagendar.</p></div>
+      </div>
+    </section>
+
+    <!-- PAUTA -->
+    <section class="vista" id="v-pauta" hidden>
+      <div class="cabeca">
+        <div><span class="lbl">Calendário · stories, reels e carrosséis</span><h1>Pauta<i>.</i></h1></div>
+        <div class="acoes-topo"><button class="bt amb" id="b-pauta-completar">Completar esta semana</button><button class="bt" data-ir="ajustes">Ajustar ritmo</button></div>
+      </div>
+      <div class="guia" data-guia="pauta"><span><svg aria-hidden="true"><use href="#i-info"/></svg></span><span><b>Navegue pelas semanas</b> com ‹ ›. Clique numa peça para ver, aprovar, enviar vídeo, reagendar ou cancelar. Espaços tracejados mostram o que falta para cumprir o ritmo: clique para completar.</span><button class="x" aria-label="Esconder dica">×</button></div>
+      <div class="cal-bar">
+        <div class="cal-nav"><button class="circ2" id="cal-ant" aria-label="Semana anterior">‹</button><h2 id="cal-tit">—</h2><button class="circ2" id="cal-prox" aria-label="Próxima semana">›</button><button class="bt" id="cal-hoje" style="margin-left:6px">Hoje</button></div>
+        <div class="legenda"><span><i style="background:#141413"></i>Story</span><span><i style="background:#D9692B"></i>Reel</span><span><i style="background:#5C8CAE"></i>Carrossel</span></div>
+      </div>
+      <div class="ritmo" id="ritmo-pauta" style="margin-bottom:14px"></div>
+      <div class="cal" id="cal"></div>
+    </section>
+
     <!-- ESTÚDIO -->
-    <section class="vista" id="v-estudio">
+    <section class="vista" id="v-estudio" hidden>
       <div class="hero">
         <div class="esq">
           <div class="retrato" aria-hidden="true"></div>
@@ -478,12 +686,6 @@ dialog.modal::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(3px)}
         </div>
       </div>
       <div class="fita" id="fita" aria-label="Próximas publicações" hidden><div class="trilho" id="trilho"></div></div>
-      <div class="processo rv">
-        <div class="passo"><span class="lbl">01 · Fábrica</span><b>Gera a arte 48 h antes</b><p>Stories, carrosséis e capas de reel saem prontos para revisar.</p></div>
-        <div class="passo"><span class="lbl">02 · Você</span><b>Aprova ou pede ajuste</b><p>Reel e story seus: envie o vídeo pelo card.</p></div>
-        <div class="passo"><span class="lbl">03 · Instagram</span><b>Publica sozinho no horário</b><p>O Facebook recebe pelo compartilhamento automático.</p></div>
-        <div class="passo"><span class="lbl">04 · Atrasou?</span><b>Gere de novo ou reagende</b><p>Arte vencida: gerar de novo. Faltou vídeo: reagendar com data e hora.</p></div>
-      </div>
       <div class="faixa">
         <div class="filtros" id="filtros" role="group" aria-label="Filtro">
           <button class="pilula" data-f="aprovar" aria-pressed="true">Para aprovar<span class="n" id="n-aprovar"></span></button>
@@ -574,6 +776,13 @@ dialog.modal::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(3px)}
     <section class="vista" id="v-ajustes" hidden>
       <div class="painel"><div class="painel-topo"><div><span class="lbl">Ajustes</span><h2>Controle</h2></div></div></div>
       <div class="ajustes">
+        <div class="ajuste largo">
+          <div class="icone"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></div>
+          <h3>Ritmo de produção</h3>
+          <p>Quantas peças por semana, em que dias e a que horas. O botão <b>Completar</b> usa estas regras e cria só o que falta, sem mexer no que já existe.</p>
+          <div class="rt-edit" id="rt-edit"></div>
+          <div class="acoes" style="gap:8px"><button class="bt pri" id="b-rt-salvar">Salvar ritmo</button><button class="bt amb" id="b-rt-aplicar">Salvar e completar 4 semanas</button></div>
+        </div>
         <div class="ajuste">
           <div class="icone"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></div>
           <h3>Pausa geral</h3>
@@ -604,6 +813,7 @@ dialog.modal::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(3px)}
       </div>
     </section>
   </main>
+  </div>
 </div>
 
 <!-- envio de vídeo/arquivo -->
@@ -651,6 +861,40 @@ dialog.modal::backdrop{background:rgba(10,10,9,.6);backdrop-filter:blur(3px)}
     </div>
   </form>
 </dialog>
+<!-- gaveta da pauta -->
+<dialog class="gaveta" id="gaveta" aria-labelledby="gav-tit">
+  <div class="in">
+    <button type="button" class="ic fechar" id="gav-fechar" aria-label="Fechar" data-dica="Fechar"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+    <span class="lbl" id="gav-sub">—</span>
+    <h3 id="gav-tit">—</h3>
+    <div class="thumb" id="gav-prev"></div>
+    <dl id="gav-dl"></dl>
+    <div class="acoes" id="gav-acoes"></div>
+    <p class="msg" id="gav-msg" role="status"></p>
+  </div>
+</dialog>
+
+<!-- levar proposta para a pauta -->
+<dialog class="modal" id="peca" aria-labelledby="peca-tit">
+  <form method="dialog">
+    <span class="lbl" id="peca-sub">Levar para a pauta</span>
+    <h3 id="peca-tit">Nova peça</h3>
+    <div class="linha2">
+      <label class="campo">Formato<select id="peca-fmt"><option>Carrossel</option><option>Reel</option><option>Story</option></select></label>
+      <label class="campo">Quando<input type="text" id="peca-quando" value="Próximo dia livre do ritmo" disabled></label>
+    </div>
+    <label class="campo">Gancho (o que prende nos 3 primeiros segundos)<input type="text" id="peca-gancho" maxlength="140"></label>
+    <label class="campo" id="peca-cliche-box">Clichê riscado no slide 1<input type="text" id="peca-cliche" maxlength="120"></label>
+    <label class="campo"><span id="peca-texto-lbl">Versão razoável (slide final)</span><textarea id="peca-texto" maxlength="220"></textarea></label>
+    <label class="campo" id="peca-extras-box">Slides do meio (um por linha, até 3)<textarea id="peca-extras" maxlength="400"></textarea></label>
+    <label class="campo">CTA<input type="text" id="peca-cta" maxlength="120"></label>
+    <p class="msg" id="peca-msg" role="status">A peça entra como Rascunho com "Revisar antes = Sim": a Fábrica gera a arte 48 h antes e você confirma ao aprovar.</p>
+    <div class="acoes">
+      <button type="button" class="bt pri" id="b-peca-criar">Criar na pauta</button>
+      <button type="button" class="bt" id="b-peca-fechar">Fechar</button>
+    </div>
+  </form>
+</dialog>
 <div class="toast" id="toast" role="status"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -663,7 +907,7 @@ const TIPOS = ['Posts', 'Reels', 'Carrosséis'];
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const icone = (n) => '<svg aria-hidden="true"><use href="#i-' + n + '"/></svg>';
-const S = { sessao: '', dados: null, filtro: 'aprovar', prev: {}, fila: [], carregandoPrev: false, vista: 'estudio', desemp: null, metrica: 'views', graf: null, timers: [], aberto: {} };
+const S = { sessao: '', dados: null, filtro: 'aprovar', prev: {}, fila: [], carregandoPrev: false, vista: 'hoje', desemp: null, metrica: 'views', graf: null, timers: [], aberto: {} };
 
 const guarda = {
   ler() { try { const o = JSON.parse(localStorage.getItem('fab_sessao') || sessionStorage.getItem('fab_sessao') || 'null'); return o && o.exp > Date.now() ? o.s : ''; } catch (e) { return ''; } },
@@ -687,7 +931,6 @@ function msg(t, erro) { const m = $('msg'); m.textContent = t || ''; m.className
 /* ── movimento ── */
 const revelar = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); revelar.unobserve(e.target); } }), { threshold: .15 });
 document.querySelectorAll('.rv').forEach(el => revelar.observe(el));
-addEventListener('scroll', () => $('topo').classList.toggle('rolou', scrollY > 30), { passive: true });
 function contar(el, alvo) {
   const de = Number(el.dataset.n) || 0; el.dataset.n = alvo;
   if (de === alvo) { el.textContent = alvo; return; }
@@ -725,6 +968,7 @@ $('f-login').addEventListener('submit', async e => {
 function mostrarLogin() { $('app').hidden = true; $('login').hidden = false; setTimeout(() => $('senha').focus(), 50); }
 function entrar() {
   $('login').hidden = true; $('app').hidden = false;
+  const v0 = location.hash.slice(1); if (VISTAS.includes(v0) && v0 !== S.vista) irPara(v0);
   carregar();
   S.timers.forEach(clearInterval);
   S.timers = [
@@ -741,20 +985,20 @@ async function sair(expirou) {
 $('b-sair').addEventListener('click', () => sair(false));
 
 /* ── navegação ── */
-$('abas').addEventListener('click', e => {
-  const b = e.target.closest('button[data-v]'); if (!b) return;
-  irPara(b.dataset.v);
-  $('abas').classList.remove('aberto'); $('menu-btn').setAttribute('aria-expanded', 'false');
-});
-$('menu-btn').addEventListener('click', () => { const a = $('abas').classList.toggle('aberto'); $('menu-btn').setAttribute('aria-expanded', String(a)); });
-$('marca').addEventListener('click', e => { e.preventDefault(); irPara('estudio'); });
+const VISTAS = ['hoje', 'pauta', 'estudio', 'desempenho', 'analise', 'estilo', 'ajustes'];
+$('abas').addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (b) irPara(b.dataset.v); });
+$('marca').addEventListener('click', e => { e.preventDefault(); irPara('hoje'); });
 function irPara(v) {
   S.vista = v;
   document.querySelectorAll('#abas button').forEach(x => x.dataset.v === v ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'));
-  ['estudio', 'desempenho', 'analise', 'estilo', 'ajustes'].forEach(k => $('v-' + k).hidden = k !== v);
+  VISTAS.forEach(k => $('v-' + k).hidden = k !== v);
+  if (v === 'hoje') desenharHoje();
+  if (v === 'pauta') desenharPauta();
   if (v === 'desempenho') carregarDesempenho();
   if (v === 'estilo') abrirEstilo();
   if (v === 'analise') carregarAnalise();
+  if (v === 'ajustes') desenharRitmoAjuste();
+  try { history.replaceState(null, '', '#' + v); } catch (e) {}
   scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -769,7 +1013,7 @@ const FILTROS = {
 };
 const ST = { 'Aguardando aprovação': 'aguardando', 'Aprovado': 'aprovado', 'Ajustar': 'ajustar', 'Erro': 'erro', 'Publicado': 'publicado', 'Pausado': 'pausado', 'Rascunho': 'rascunho' };
 const ST_TXT = { 'Aguardando aprovação': 'Aprovar', 'Pausado': 'Cancelado' };
-const ocupado = () => Array.from(document.querySelectorAll('.extra textarea, #tok')).some(t => t.value.trim() || t === document.activeElement) || $('envio').open || $('reag').open;
+const ocupado = () => Array.from(document.querySelectorAll('.extra textarea, #tok')).some(t => t.value.trim() || t === document.activeElement) || $('envio').open || $('reag').open || $('peca').open || $('gaveta').open;
 
 async function carregar() {
   msg('Carregando…');
@@ -787,6 +1031,7 @@ function aplicar(d) {
   const agora = d.agora || Date.now();
   $('s-ig').className = 'sinal ' + (d.conectado ? 'on' : 'off');
   $('s-ig').lastElementChild.textContent = d.conectado ? 'Instagram conectado' : 'Instagram sem token';
+  $('s-ig-m').className = 'sinal ' + (d.conectado ? 'on' : 'off');
   $('s-ciclo').className = 'sinal ' + (d.gatilho && !d.pausa ? 'on' : 'off');
   $('s-ciclo').lastElementChild.textContent = d.pausa ? 'Pausa geral' : (d.gatilho ? 'Ciclo 10 min' : 'Ciclo desligado');
   $('l-plan').href = d.planilha;
@@ -808,6 +1053,9 @@ function aplicar(d) {
     $('trilho').innerHTML = html + html;
   }
   desenhar();
+  desenharHoje();
+  if (S.vista === 'pauta') desenharPauta();
+  if (S.vista === 'ajustes' && !RTE.r) desenharRitmoAjuste();
 }
 
 function desenhar() {
@@ -1257,7 +1505,7 @@ function desenharAnalise() {
   exps.push(['Reel: fala no segundo 0', 'Rosto falando a frase-gancho no 1º segundo vs. texto na tela com música', 'Duração 20–30 s, mesmo tema', 'Retenção média > 5 s e views/alcance > 1,3']);
   exps.push(['Story caixa de pergunta → resposta pública', 'Pergunta aberta hoje e resposta em story no dia seguinte vs. story só de frase', 'Horário 08:30', 'Respostas/alcance > 3% e visitas ao perfil vindas de story']);
   html.push('<div class="an-bloco"><h3><span class="lbl">03</span>Protocolo ímã de seguidores e publis · próximos 7 dias</h3><div class="exps">' +
-    exps.slice(0, 5).map((e, k) => '<div class="exp"><span class="lbl">Experimento ' + (k + 1) + '</span><b>' + esc(e[0]) + '</b><dl><dt>Variável a testar</dt><dd>' + esc(e[1]) + '</dd><dt>Variável fixa</dt><dd>' + esc(e[2]) + '</dd><dt>Métrica de validação</dt><dd>' + esc(e[3]) + '</dd></dl></div>').join('') + '</div></div>');
+    exps.slice(0, 5).map((e, k) => '<div class="exp"><span class="lbl">Experimento ' + (k + 1) + '</span><b>' + esc(e[0]) + '</b><dl><dt>Variável a testar</dt><dd>' + esc(e[1]) + '</dd><dt>Variável fixa</dt><dd>' + esc(e[2]) + '</dd><dt>Métrica de validação</dt><dd>' + esc(e[3]) + '</dd></dl><div class="acoes"><button type="button" class="bt" data-exp="' + k + '">Registrar teste</button></div></div>').join('') + '</div></div>');
 
   /* 4. multiplicador */
   const anc = itens.slice().sort((a, b) => (b.seg - a.seg) || (pct(b.salvos + b.shares, b.alcance) - pct(a.salvos + a.shares, a.alcance)) || (b.alcance - a.alcance))[0];
@@ -1270,7 +1518,7 @@ function desenharAnalise() {
       ['Opinião / posicionamento forte', 'Opinião impopular: "' + T + '" não é para todo mundo', 'Onde fica o razoável entre o exagero e a omissão.', 'Siga se você também pensa assim.']
     ];
     html.push('<div class="an-bloco"><h3><span class="lbl">04</span>Multiplicador do conteúdo âncora</h3><p class="ancora"><b>Âncora:</b> ' + esc(anc.tema) + ' · ' + esc(anc.tipo) + ' · ' + anc.seg + ' seguidor(es), ' + fN(anc.alcance) + ' de alcance, ' + (anc.salvos + anc.shares) + ' salvos+envios</p><div class="pecas">' +
-      pecas.map((p, k) => '<div class="peca"><span class="lbl">' + (k + 1) + ' · ' + esc(p[0]) + '</span><dl><dt>Hook</dt><dd><b>' + esc(p[1]) + '</b></dd><dt>Promessa de valor</dt><dd>' + esc(p[2]) + '</dd><dt>CTA</dt><dd>' + esc(p[3]) + '</dd></dl></div>').join('') + '</div></div>');
+      pecas.map((p, k) => '<div class="peca"><span class="lbl">' + (k + 1) + ' · ' + esc(p[0]) + ' · ' + (k % 3 ? 'carrossel' : 'reel') + '</span><dl><dt>Hook</dt><dd><b>' + esc(p[1]) + '</b></dd><dt>Promessa de valor</dt><dd>' + esc(p[2]) + '</dd><dt>CTA</dt><dd>' + esc(p[3]) + '</dd></dl><div class="acoes"><button type="button" class="bt pri" data-peca="' + k + '">Levar para a pauta</button></div></div>').join('') + '</div><div class="acoes" style="margin:0"><button type="button" class="bt amb" id="b-levar4">Levar as 4 para a pauta</button></div></div>');
   }
 
   /* 5. comunidade e mídia kit */
@@ -1296,6 +1544,16 @@ function desenharAnalise() {
     '</div>');
   html.push('<p class="an-aviso">Análise automática por regras sobre os números reais do Instagram (aba Métricas por post e Conta da planilha). Para uma leitura aprofundada, peça "analise o período" no chat.</p>');
   $('an-conteudo').innerHTML = html.join('');
+  if (anc) {
+    const PA = pecasAncora(anc);
+    document.querySelectorAll('#an-conteudo [data-peca]').forEach(b => b.onclick = () => abrirPeca(PA[+b.dataset.peca], anc.id));
+    $('b-levar4').onclick = e => levarPecas(PA, anc.id, e.currentTarget).catch(() => {});
+  }
+  document.querySelectorAll('#an-conteudo [data-exp]').forEach(b => b.onclick = async () => {
+    const e = exps[+b.dataset.exp]; b.disabled = true;
+    try { await api('experimento', [{ nome: e[0], testar: e[1], fixa: e[2], metrica: e[3] }]); b.textContent = '✓ Registrado'; toast('Teste registrado na aba Experimentos da planilha.'); }
+    catch (err) { toast(err.message, true); b.disabled = false; }
+  });
   $('b-kit') && ($('b-kit').onclick = async () => { try { await navigator.clipboard.writeText(kit); toast('Mídia kit copiado.'); } catch (e) { toast('Selecione o texto e copie.', true); } });
 }
 
@@ -1446,6 +1704,363 @@ $('b-tok').addEventListener('click', async () => {
   if (t.length < 20) { toast('Cole o token completo.', true); return; }
   try { const r = await api('conectar', [t]); $('tok').value = ''; toast('Conectado: @' + r.conta); carregar(); } catch (e) { toast(e.message, true); }
 });
+
+/* ══════════ painel 2: Hoje, Pauta, ritmo e propostas ══════════ */
+const RITMO_PADRAO = { story: { semana: 7, dias: [0, 1, 2, 3, 4, 5, 6], hora: '08:30' }, reel: { semana: 2, dias: [2, 5], hora: '19:00' }, carrossel: { semana: 3, dias: [1, 3, 5], hora: '12:30' } };
+const FMT = { story: { nome: 'Stories', um: 'story', cor: '#141413' }, reel: { nome: 'Reels', um: 'reel', cor: '#D9692B' }, carrossel: { nome: 'Carrosséis', um: 'carrossel', cor: '#5C8CAE' } };
+const DIAS_C = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+const DIAS_N = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const chave = f => /reel/i.test(f) ? 'reel' : /carross/i.test(f) ? 'carrossel' : 'story';
+const ritmo = () => (S.dados && S.dados.ritmo) || RITMO_PADRAO;
+/* datas como dia civil (meio-dia UTC) para não depender do fuso do aparelho */
+const diaT = br => { const m = String(br || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? Date.UTC(+m[3], m[2] - 1, +m[1], 12) : 0; };
+const tDia = t => { const d = new Date(t); return ('0' + d.getUTCDate()).slice(-2) + '/' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '/' + d.getUTCFullYear(); };
+const hojeT = () => diaT(new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }));
+const segDe = t => t - ((new Date(t).getUTCDay() + 6) % 7) * 864e5;
+const ativos = () => (S.dados ? S.dados.itens : []).filter(i => i.status !== 'Pausado');
+
+function semana(seg) {
+  const dias = [];
+  for (let k = 0; k < 7; k++) { const t = seg + k * 864e5; dias.push({ t, br: tDia(t), dow: new Date(t).getUTCDay(), itens: [] }); }
+  const mapa = {}; dias.forEach(d => mapa[d.br] = d);
+  (S.dados ? S.dados.itens : []).forEach(i => { const d = mapa[i.data]; if (d) d.itens.push(i); });
+  dias.forEach(d => d.itens.sort((a, b) => a.when - b.when));
+  const cont = { story: 0, reel: 0, carrossel: 0 };
+  dias.forEach(d => d.itens.forEach(i => { if (i.status !== 'Pausado') cont[chave(i.formato)]++; }));
+  return { seg, dias, cont };
+}
+function faltando(sem) { const R = ritmo(); return Object.keys(FMT).reduce((a, k) => a + Math.max(0, R[k].semana - sem.cont[k]), 0); }
+
+function medidor(box, sem) {
+  const R = ritmo();
+  box.innerHTML = Object.keys(FMT).map(k => {
+    const meta = R[k].semana, tem = sem.cont[k], ok = tem >= meta;
+    const barras = Array.from({ length: Math.max(meta, 1) }, (_, j) => '<i class="' + (j < tem ? 'ok' : '') + '"></i>').join('');
+    return '<div class="rt c-' + k + (ok ? ' completo' : '') + '"><div class="topo"><span class="lbl">' + FMT[k].nome + '</span><b>' + tem + '<small> / ' + meta + '</small></b></div><div class="barras">' + barras + '</div><span class="falta">' + (ok ? '✓ completo' + (tem > meta ? ' (+' + (tem - meta) + ')' : '') : 'faltam ' + (meta - tem)) + '</span></div>';
+  }).join('');
+}
+
+async function completar(semanas, b) {
+  const txt = b ? b.textContent : '';
+  if (b) { b.disabled = true; b.textContent = 'Planejando…'; }
+  try {
+    const r = await api('ritmoAplicar', [semanas]);
+    const n = r.criadas.length;
+    toast(n ? n + ' peça(s) criadas na pauta. As artes saem 48 h antes de cada uma.' : 'Ritmo já está completo nesse período.');
+    if (r.aviso) setTimeout(() => toast(r.aviso, true), 3400);
+    await carregar();
+  } catch (e) { toast(e.message, true); }
+  if (b) { b.disabled = false; b.textContent = txt; }
+}
+
+/* ── relógio e próxima publicação ── */
+function tic() {
+  const agora = new Date();
+  $('relogio').firstChild.nodeValue = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
+  $('relogio-dia').textContent = agora.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'short', timeZone: 'America/Sao_Paulo' });
+  const p = S.proxima, cd = $('prox-cd');
+  if (!cd) return;
+  if (!p) { cd.innerHTML = '—'; return; }
+  let s = Math.max(0, Math.round((p.when - Date.now()) / 1000));
+  const d = Math.floor(s / 86400); s -= d * 86400;
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60;
+  const z = n => ('0' + n).slice(-2);
+  cd.innerHTML = (d ? d + 'd ' : '') + z(h) + ':' + z(m) + (d ? '' : ':' + z(ss)) + '<small>para sair</small>';
+}
+setInterval(tic, 1000);
+
+function desenharHoje() {
+  const d = S.dados; if (!d) return;
+  const agora = d.agora || Date.now();
+  const hr = Number(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', hour12: false, timeZone: 'America/Sao_Paulo' }).slice(0, 2));
+  $('hoje-tit').innerHTML = (hr < 12 ? 'Bom dia' : hr < 18 ? 'Boa tarde' : 'Boa noite') + ', Leo<i>.</i>';
+  $('hoje-data').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', timeZone: 'America/Sao_Paulo' }) + ' · @opinador_razoavel';
+  // próxima
+  const prox = d.itens.filter(i => !['Publicado', 'Pausado'].includes(i.status) && i.when >= agora - 60e3).sort((a, b) => a.when - b.when)[0];
+  S.proxima = prox || null;
+  if (prox) {
+    const reel = /reel/i.test(prox.formato), autoral = /autoral/i.test(prox.origem);
+    const falta = (reel || autoral) && !prox.temArquivo;
+    const podeAprovar = ['Aguardando aprovação', 'Ajustar', 'Erro'].includes(prox.status) && prox.temArquivo;
+    $('prox-tit').textContent = titulo(prox);
+    $('prox-meta').innerHTML = '<span>' + esc(prox.formato) + '</span><span>' + esc(diaSemana(prox.when)) + ' ' + esc(curtoData(prox)) + ' · ' + esc(prox.hora) + '</span>' +
+      '<span class="' + (prox.status === 'Aprovado' ? '' : 'alerta') + '">' + esc(prox.status === 'Aprovado' ? 'Aprovado · sai sozinho' : falta ? (reel ? 'Falta o vídeo' : 'Falta o arquivo') : podeAprovar ? 'Precisa da sua aprovação' : 'Arte sai 48 h antes') + '</span>';
+    const ac = $('prox-acoes'); ac.innerHTML = '';
+    const bt = (t, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'bt ' + cls; b.textContent = t; b.onclick = fn; ac.appendChild(b); };
+    if (falta) bt(reel ? 'Enviar vídeo' : 'Enviar arquivo', 'pri', () => abrirEnvio(prox));
+    else if (podeAprovar) bt('Ver e aprovar', 'pri', () => abrirGaveta(prox));
+    bt('Detalhes', '', () => abrirGaveta(prox));
+  } else { $('prox-tit').textContent = 'Nada programado. Use "Planejar 4 semanas".'; $('prox-meta').innerHTML = ''; $('prox-acoes').innerHTML = ''; }
+  tic();
+  // fila de ações
+  const T = [];
+  const em = (i, dias) => i.when < agora + dias * 864e5;
+  d.itens.forEach(i => {
+    if (['Publicado', 'Pausado'].includes(i.status)) return;
+    const late = atrasado(i, agora), reel = /reel/i.test(i.formato), autoral = /autoral/i.test(i.origem);
+    const falta = (reel || autoral) && !i.temArquivo;
+    const pode = ['Aguardando aprovação', 'Ajustar', 'Erro'].includes(i.status) && i.temArquivo;
+    const quando = diaSemana(i.when) + ' ' + curtoData(i) + ' · ' + i.hora;
+    if (late && i.status !== 'Aprovado') T.push({ p: 0, cls: 'urg', ic: 'x', t: titulo(i), s: 'Atrasado · ' + i.id + ' · ' + i.formato + ' · ' + quando, a: [[falta ? 'Reagendar' : 'Gerar de novo', 'pri', () => falta ? abrirReag(i) : acaoRapida(i, 'regerar')], ['Detalhes', '', () => abrirGaveta(i)]] });
+    else if (falta && em(i, 10)) T.push({ p: 1, cls: 'vid', ic: 'vid', t: titulo(i), s: (reel ? 'Gravar e enviar o vídeo' : 'Enviar arquivo') + ' · ' + i.id + ' · ' + quando, a: [[reel ? 'Enviar vídeo' : 'Enviar', 'pri', () => abrirEnvio(i)], ['Reagendar', '', () => abrirReag(i)]] });
+    else if (pode) T.push({ p: 2, cls: '', ic: 'ok', t: titulo(i), s: 'Aprovar · ' + i.id + ' · ' + i.formato + ' · ' + quando + (/sim/i.test(i.revisar) ? ' · revisar antes' : ''), a: [['Ver e aprovar', 'pri', () => abrirGaveta(i)]] });
+  });
+  T.sort((a, b) => a.p - b.p);
+  $('fila-n').textContent = T.length ? T.length + ' pendente(s)' : '';
+  $('n-hoje').textContent = T.length; $('n-hoje').hidden = !T.length;
+  const box = $('tarefas'); box.innerHTML = '';
+  if (!T.length) box.innerHTML = '<div class="vazio-ok">' + icone('ok').replace('<svg', '<svg width="20" height="20"') + 'Tudo em dia. Nada esperando por você agora.</div>';
+  T.slice(0, 8).forEach((t, k) => {
+    const el = document.createElement('div'); el.className = 'tarefa ' + t.cls; el.style.setProperty('--i', k);
+    el.innerHTML = '<span class="bola">' + icone(t.ic) + '</span><div style="min-width:0"><b>' + esc(t.t) + '</b><small>' + esc(t.s) + '</small></div><div class="acoes"></div>';
+    t.a.forEach(([txt, cls, fn]) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'bt ' + cls; b.textContent = txt; b.onclick = fn; el.querySelector('.acoes').appendChild(b); });
+    box.appendChild(el);
+  });
+  if (T.length > 8) box.insertAdjacentHTML('beforeend', '<p class="dica" style="margin:4px 0 0">+ ' + (T.length - 8) + ' na Pauta e no Estúdio.</p>');
+  // ritmo
+  const sem = semana(segDe(hojeT()));
+  medidor($('ritmo-hoje'), sem);
+  const R = ritmo();
+  $('ritmo-dica').textContent = 'Meta por semana: ' + R.story.semana + ' stories, ' + R.reel.semana + ' reels e ' + R.carrossel.semana + ' carrosséis (seg a dom). ' + (faltando(sem) ? 'Faltam ' + faltando(sem) + ' peça(s) nesta semana.' : 'Semana completa.');
+  desenharPropostas();
+}
+
+async function acaoRapida(it, a) {
+  try { await api('acao', [it.id, a, '']); toast({ regerar: it.id + ': gerando de novo.', aprovar: it.id + ' aprovado.' }[a] || 'Feito.'); delete S.prev[it.id]; await carregar(); }
+  catch (e) { toast(e.message, true); }
+}
+
+/* ── propostas de melhora (aplicar com um clique) ── */
+const PROP = {
+  ler() { try { return JSON.parse(localStorage.getItem('fab_prop') || '{}'); } catch (e) { return {}; } },
+  marcar(id, dias) { const o = PROP.ler(); o[id] = Date.now() + dias * 864e5; try { localStorage.setItem('fab_prop', JSON.stringify(o)); } catch (e) {} },
+  oculta(id) { const o = PROP.ler(); return o[id] && o[id] > Date.now(); }
+};
+const BIO = 'Conselhos razoáveis para viver com mais paz.\nEntre o exagero e a omissão: 1 reflexão por dia.\nComece pelos destaques ↓';
+function resumoAnalise() {
+  if (!AN.dados) return null;
+  const salvo = AN.periodo; AN.periodo = 30;
+  const itens = itensAnalise(); AN.periodo = salvo;
+  const lim = Date.now() - 30 * 864e5;
+  const conta = (AN.dados.conta || []).map(r => ({ t: tsData(r.Data), saldo: num(r['Saldo de seguidores']), visitas: num(r['Visitas ao perfil']) })).filter(r => r.t >= lim);
+  const visitas = conta.reduce((a, r) => a + r.visitas, 0), saldo = conta.reduce((a, r) => a + r.saldo, 0);
+  const feed = itens.filter(o => o.tipo !== 'Stories');
+  const engMed = media(feed.length ? feed : itens, o => pct(o.salvos + o.shares, o.alcance));
+  const anc = itens.slice().sort((a, b) => (b.seg - a.seg) || (pct(b.salvos + b.shares, b.alcance) - pct(a.salvos + a.shares, a.alcance)) || (b.alcance - a.alcance))[0];
+  return { conv: pct(saldo, visitas), visitas, saldo, engMed, anc, reels: itens.filter(o => o.tipo === 'Reels').length };
+}
+function pecasAncora(anc) {
+  const T = String(anc.tema).replace(/[.?!]+$/, '');
+  return [
+    { k: 'caso', formato: 'Reel', titulo: 'Apliquei isso por 7 dias', gancho: 'Apliquei "' + T + '" por 7 dias. Isso mudou.', promessa: 'O antes e depois real, sem teoria.', cta: 'Siga para ver o dia 8.' },
+    { k: 'erro', formato: 'Carrossel', cliche: T, gancho: 'O erro que quase todo mundo comete com "' + T + '"', razoavel: 'O conselho pronto falha quando vira regra. A versão razoável cabe na sua vida real.', extras: 'Parece certo porque é simples. | Na prática, vira cobrança. | O meio-termo: ajuste à sua realidade.', promessa: 'Por que o conselho pronto falha e qual é a versão razoável.', cta: 'Siga: amanhã tem a correção em 3 passos.' },
+    { k: 'tutorial', formato: 'Carrossel', cliche: T + ' (sem método)', gancho: '"' + T + '" em 3 passos (salve antes que se perca)', razoavel: 'Três passos pequenos, um por dia. Salve e comece hoje.', extras: 'Passo 1: perceba quando acontece. | Passo 2: pare 10 segundos antes de reagir. | Passo 3: escolha a resposta razoável.', promessa: 'Um roteiro aplicável hoje, um passo por slide.', cta: 'Salve e siga para o próximo roteiro.' },
+    { k: 'opiniao', formato: 'Reel', titulo: 'Opinião impopular', gancho: 'Opinião impopular: "' + T + '" não é para todo mundo', promessa: 'Onde fica o razoável entre o exagero e a omissão.', cta: 'Siga se você também pensa assim.' }
+  ];
+}
+function propostas() {
+  const d = S.dados; if (!d) return [];
+  const out = [], R = ritmo();
+  const sem = semana(segDe(hojeT()));
+  const f1 = faltando(sem);
+  if (f1) out.push({ id: 'ritmo1', imp: 'alta', rot: 'Ritmo', t: 'Completar o ritmo desta semana', p: 'Faltam peças para cumprir a meta. A Fábrica cria só o que falta, nos dias preferidos.', dado: Object.keys(FMT).map(k => FMT[k].nome + ' ' + sem.cont[k] + '/' + R[k].semana).join(' · '), bt: 'Completar agora', fn: b => completar(1, b) });
+  let f4 = 0; for (let w = 1; w <= 4; w++) f4 += faltando(semana(segDe(hojeT()) + w * 7 * 864e5));
+  if (f4) out.push({ id: 'ritmo4', imp: f1 ? 'media' : 'alta', rot: 'Planejamento', t: 'Planejar as próximas 4 semanas', p: 'Pauta com antecedência mantém a frequência que o algoritmo premia.', dado: f4 + ' peça(s) faltando nas próximas 4 semanas', bt: 'Planejar 4 semanas', fn: b => completar(4, b) });
+  const semVideo = ativos().filter(i => /reel/i.test(i.formato) && !i.temArquivo && i.when > Date.now() && i.when < Date.now() + 10 * 864e5);
+  if (semVideo.length) out.push({ id: 'videos', imp: 'alta', rot: 'Reels', t: 'Gravar ' + semVideo.length + ' reel(s) dos próximos 10 dias', p: 'Reel é o formato que mais leva o perfil a quem ainda não segue. Grave em sequência: 20–30 s, gancho falado no segundo 0.', dado: semVideo.map(i => i.id + ' ' + curtoData(i)).join(' · '), bt: 'Enviar o primeiro', fn: () => abrirEnvio(semVideo[0]), naoFeito: true });
+  const A = resumoAnalise();
+  if (A) {
+    if (A.visitas && A.conv < 15) out.push({ id: 'bio', imp: A.conv < 8 ? 'alta' : 'media', rot: 'Conversão', t: 'Bio com promessa clara', p: 'Quem visita o perfil precisa entender em 3 s por que seguir. Copie a bio sugerida e cole em Editar perfil; o teste fica registrado.', dado: 'Visitas → seguidores ' + fP(A.conv) + ' (' + fN(A.visitas) + ' visitas, 30 dias) · meta 15%', bt: 'Copiar bio e registrar teste', fn: async () => { try { await navigator.clipboard.writeText(BIO); } catch (e) {} await api('experimento', [{ nome: 'Bio com promessa clara', testar: 'Bio nova: ' + BIO.replace(/\n/g, ' / '), fixa: 'Temas do perfil', metrica: 'Visitas → seguidores > 15% em 7 dias (antes ' + fP(A.conv) + ')' }]); toast('Bio copiada. Cole no Instagram: Editar perfil → Bio.'); } });
+    if (A.anc && A.anc.seg + A.anc.salvos + A.anc.shares > 0) out.push({ id: 'ancora-' + A.anc.id, imp: 'media', rot: 'Escalar', t: 'Desdobrar o post âncora em 4 peças', p: '"' + A.anc.tema + '" é o que mais trouxe seguidores. Vira 2 reels e 2 carrosséis na pauta, marcados para revisar.', dado: A.anc.seg + ' seguidor(es) · ' + fN(A.anc.alcance) + ' de alcance · ' + (A.anc.salvos + A.anc.shares) + ' salvos+envios', bt: 'Levar as 4 para a pauta', fn: b => levarPecas(pecasAncora(A.anc), A.anc.id, b) });
+    if (A.engMed < 3) out.push({ id: 'tutorial', imp: 'media', rot: 'Mídia kit', t: 'Carrossel tutorial salvável', p: 'Salvamentos e envios são o número que as marcas olham. Um passo a passo por semana aumenta esse índice.', dado: 'Salvos + envios ' + fP(A.engMed) + ' do alcance · meta 3%', bt: 'Revisar e criar', fn: () => abrirPeca(A.anc ? pecasAncora(A.anc)[2] : { formato: 'Carrossel', gancho: 'Em 3 passos (salve)', cliche: 'Basta querer.', razoavel: 'Querer ajuda. Método resolve.', extras: 'Passo 1 | Passo 2 | Passo 3', cta: 'Salve para reler.' }, A.anc && A.anc.id) });
+    if (!A.reels && !semVideo.length) out.push({ id: 'reel0', imp: 'alta', rot: 'Descoberta', t: 'Publicar o primeiro reel', p: 'Sem reel o perfil depende de quem já segue. A pauta já tem reels; falta o vídeo.', dado: '0 reels com dados nos últimos 30 dias', bt: 'Ver reels na pauta', fn: () => irPara('pauta'), naoFeito: true });
+  }
+  return out.filter(p => !PROP.oculta(p.id));
+}
+function desenharPropostas() {
+  const box = $('props'); if (!box) return;
+  const lst = propostas();
+  if (!AN.dados && !AN.carregando) { AN.carregando = true; api('analise').then(r => { AN.dados = r; desenharPropostas(); }).catch(() => {}).finally(() => AN.carregando = false); }
+  box.innerHTML = '';
+  if (!lst.length) { box.innerHTML = '<div class="vazio-ok">' + icone('ok').replace('<svg', '<svg width="20" height="20"') + (AN.dados ? 'Nenhuma proposta pendente. Ótimo sinal.' : 'Lendo seus números…') + '</div>'; return; }
+  lst.forEach((p, k) => {
+    const el = document.createElement('article'); el.className = 'prop ' + p.imp; el.style.setProperty('--i', k);
+    el.innerHTML = '<span class="lbl">' + esc(p.rot) + ' · impacto ' + p.imp.replace('media', 'médio').replace('alta', 'alto').replace('baixa', 'baixo') + '</span><b>' + esc(p.t) + '</b><p>' + esc(p.p) + '</p><span class="dado">' + esc(p.dado) + '</span><div class="acoes"><button type="button" class="bt pri">' + esc(p.bt) + '</button><button type="button" class="bt">Dispensar</button></div>';
+    const [ok, nao] = el.querySelectorAll('button');
+    ok.onclick = async () => { ok.disabled = true; try { await p.fn(ok); if (!p.naoFeito) { PROP.marcar(p.id, 7); el.classList.add('feito'); } } catch (e) { toast(e.message, true); } ok.disabled = false; };
+    nao.onclick = () => { PROP.marcar(p.id, 7); el.style.transition = 'opacity .3s'; el.style.opacity = '0'; setTimeout(desenharPropostas, 300); };
+    box.appendChild(el);
+  });
+  $('n-hoje').hidden = !(Number($('n-hoje').textContent) || 0);
+}
+
+/* ── levar peças para a pauta ── */
+async function levarPecas(pecas, origemId, b) {
+  const txt = b ? b.textContent : '';
+  if (b) { b.disabled = true; b.textContent = 'Criando…'; }
+  try {
+    const r = await api('pautaCriar', [pecas.map(p => Object.assign({ origemId }, p))]);
+    toast(r.criadas.map(c => c.id + ' ' + c.formato.toLowerCase() + ' ' + c.data.slice(0, 5)).join(' · ') + ' na pauta (revisar antes).');
+    await carregar();
+  } catch (e) { toast(e.message, true); throw e; }
+  finally { if (b) { b.disabled = false; b.textContent = txt; } }
+}
+const PECA = { origem: '' };
+function abrirPeca(p, origemId) {
+  PECA.origem = origemId || '';
+  $('peca-tit').textContent = p.titulo || p.gancho || 'Nova peça';
+  $('peca-fmt').value = p.formato || 'Carrossel';
+  $('peca-gancho').value = p.gancho || '';
+  $('peca-cliche').value = p.cliche || '';
+  $('peca-texto').value = p.razoavel || p.titulo || '';
+  $('peca-extras').value = String(p.extras || '').split('|').map(s => s.trim()).filter(Boolean).join('\n');
+  $('peca-cta').value = p.cta || '';
+  PECA.promessa = p.promessa || '';
+  formPeca(); $('peca-msg').className = 'msg';
+  $('peca').showModal();
+}
+function formPeca() {
+  const c = $('peca-fmt').value === 'Carrossel';
+  $('peca-cliche-box').hidden = !c; $('peca-extras-box').hidden = !c;
+  $('peca-texto-lbl').textContent = c ? 'Versão razoável (slide final)' : $('peca-fmt').value === 'Reel' ? 'Título da capa' : 'Frase do story';
+}
+$('peca-fmt').addEventListener('change', formPeca);
+$('b-peca-fechar').addEventListener('click', () => $('peca').close());
+$('b-peca-criar').addEventListener('click', async () => {
+  const f = $('peca-fmt').value, b = $('b-peca-criar');
+  const p = { formato: f, gancho: $('peca-gancho').value.trim(), titulo: $('peca-texto').value.trim(), razoavel: $('peca-texto').value.trim(), cliche: $('peca-cliche').value.trim(), extras: $('peca-extras').value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 3).join(' | '), cta: $('peca-cta').value.trim(), promessa: PECA.promessa };
+  if (!p.razoavel || (f === 'Carrossel' && !p.cliche)) { $('peca-msg').textContent = f === 'Carrossel' ? 'Preencha o clichê e a versão razoável.' : 'Preencha o texto principal.'; $('peca-msg').className = 'msg err'; return; }
+  try { await levarPecas([p], PECA.origem, b); $('peca').close(); } catch (e) { $('peca-msg').textContent = e.message; $('peca-msg').className = 'msg err'; }
+});
+
+/* ── pauta: calendário semanal ── */
+const CAL = { seg: 0 };
+function desenharPauta() {
+  if (!S.dados) return;
+  if (!CAL.seg) CAL.seg = segDe(hojeT());
+  const sem = semana(CAL.seg), hoje = hojeT(), R = ritmo();
+  const fim = new Date(CAL.seg + 6 * 864e5);
+  const ini = new Date(CAL.seg);
+  $('cal-tit').textContent = ini.getUTCDate() + (ini.getUTCMonth() !== fim.getUTCMonth() ? ' ' + MESES[ini.getUTCMonth()] : '') + ' – ' + fim.getUTCDate() + ' ' + MESES[fim.getUTCMonth()] + ' ' + fim.getUTCFullYear();
+  medidor($('ritmo-pauta'), sem);
+  const futuro = CAL.seg + 7 * 864e5 > hoje;
+  $('b-pauta-completar').hidden = !futuro || !faltando(sem);
+  const box = $('cal'); box.innerHTML = '';
+  // onde faltam peças: dias preferidos livres (só no futuro)
+  const faltas = {}; 
+  Object.keys(FMT).forEach(k => {
+    let falta = R[k].semana - sem.cont[k];
+    sem.dias.forEach(d => { if (falta > 0 && d.t > hoje && R[k].dias.includes(d.dow) && !d.itens.some(i => i.status !== 'Pausado' && chave(i.formato) === k)) { (faltas[d.br] = faltas[d.br] || []).push(k); falta--; } });
+  });
+  sem.dias.forEach(d => {
+    const col = document.createElement('div');
+    col.className = 'dia' + (d.t === hoje ? ' hoje' : d.t < hoje ? ' passado' : '');
+    col.innerHTML = '<header><span>' + DIAS_N[d.dow] + '</span><b>' + new Date(d.t).getUTCDate() + '</b></header><div class="itens"></div>';
+    const it = col.querySelector('.itens');
+    d.itens.forEach((i, k) => {
+      const b = document.createElement('button'); b.type = 'button';
+      const st = i.status === 'Publicado' ? 's-pub' : i.status === 'Pausado' ? 's-pausa' : i.status === 'Aprovado' ? 's-aprov' : ['Erro', 'Ajustar'].includes(i.status) || atrasado(i, Date.now()) ? 's-erro' : i.status === 'Aguardando aprovação' ? 's-aguarda' : '';
+      b.className = 'chip2 f-' + chave(i.formato) + ' ' + st; b.style.animationDelay = (k * 40) + 'ms';
+      b.innerHTML = '<span class="l1">' + esc(i.hora) + ' · ' + esc(i.formato) + '<i title="' + esc(i.status) + '"></i></span><span class="l2">' + esc(titulo(i)) + '</span>';
+      b.title = i.id + ' · ' + i.status;
+      b.onclick = () => abrirGaveta(i);
+      it.appendChild(b);
+    });
+    (faltas[d.br] || []).forEach(k => {
+      const f = document.createElement('button'); f.type = 'button'; f.className = 'falta2'; f.textContent = '+ ' + FMT[k].um + ' faltando · ' + R[k].hora;
+      f.onclick = () => completar(1 + Math.round((CAL.seg - segDe(hoje)) / (7 * 864e5)), f);
+      it.appendChild(f);
+    });
+    if (!it.children.length) it.innerHTML = '<span class="mini" style="padding:6px 4px">—</span>';
+    box.appendChild(col);
+  });
+}
+$('cal-ant').addEventListener('click', () => { CAL.seg -= 7 * 864e5; desenharPauta(); });
+$('cal-prox').addEventListener('click', () => { CAL.seg += 7 * 864e5; desenharPauta(); });
+$('cal-hoje').addEventListener('click', () => { CAL.seg = segDe(hojeT()); desenharPauta(); });
+$('b-pauta-completar').addEventListener('click', e => completar(1 + Math.round((CAL.seg - segDe(hojeT())) / (7 * 864e5)), e.currentTarget));
+$('b-completar1').addEventListener('click', e => completar(1, e.currentTarget));
+$('b-completar4').addEventListener('click', e => completar(4, e.currentTarget));
+
+/* ── gaveta: detalhes e ações de uma peça ── */
+const GAV = { it: null };
+function abrirGaveta(it) {
+  GAV.it = it;
+  const agora = Date.now(), late = atrasado(it, agora);
+  const reel = /reel/i.test(it.formato), autoral = /autoral/i.test(it.origem);
+  const falta = (reel || autoral) && !it.temArquivo;
+  const pode = ['Aguardando aprovação', 'Ajustar', 'Erro'].includes(it.status) && it.temArquivo;
+  $('gav-sub').textContent = it.id + ' · ' + it.formato + ' · ' + diaSemana(it.when) + ' ' + it.data + ' ' + it.hora;
+  $('gav-tit').textContent = titulo(it);
+  const pv = $('gav-prev'); pv.id = 'gav-prev'; pv.innerHTML = '';
+  pv.style.display = it.temArquivo ? '' : 'none';
+  if (it.temArquivo) {
+    pv.innerHTML = '<span class="carregando"></span>';
+    const mostra = p => { const tmp = document.createElement('div'); tmp.className = 'thumb'; tmp.id = 'prev-' + it.id + '-g'; pv.innerHTML = ''; if (p.img) { const im = new Image(); im.onload = () => im.classList.add('ok'); im.src = p.img; im.alt = 'Prévia ' + it.id; pv.appendChild(im); } else if (p.video) { const f = document.createElement('iframe'); f.src = p.video; f.title = 'Vídeo ' + it.id; pv.appendChild(f); } };
+    if (S.prev[it.id]) mostra(S.prev[it.id]); else api('preview', [it.id, 0]).then(p => { S.prev[it.id] = p; if (GAV.it === it) mostra(p); }).catch(() => { pv.innerHTML = '<span class="vazio">Prévia indisponível</span>'; });
+  }
+  const linha = (k, v) => v && v !== '—' ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : '';
+  $('gav-dl').innerHTML = linha('Status', it.status + (late ? ' · atrasado' : '')) + linha('Template', it.tpl) + linha('Tema', it.tema) + linha('Texto', it.texto) + linha('Legenda', it.legenda) + linha('Revisar', /sim/i.test(it.revisar) ? 'Sim: escreva a confirmação ao aprovar' : '') + linha('Nota', it.nota) + linha('Publicado', it.pubEm ? it.pubEm + (it.atraso ? ' · ' + it.atraso : '') : '');
+  const ac = $('gav-acoes'); ac.innerHTML = ''; $('gav-msg').textContent = ''; $('gav-msg').className = 'msg';
+  const bt = (t, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'bt ' + cls; b.textContent = t; b.onclick = () => fn(b); ac.appendChild(b); };
+  const fazer = async (a, b, nota) => { b.disabled = true; try { await api('acao', [it.id, a, nota || '']); toast({ aprovar: it.id + ' aprovado.', regerar: it.id + ': gerando de novo.', cancelar: it.id + ' cancelado.', ajustar: it.id + ': ajuste registrado.' }[a]); delete S.prev[it.id]; $('gaveta').close(); carregar(); } catch (e) { $('gav-msg').textContent = e.message; $('gav-msg').className = 'msg err'; b.disabled = false; } };
+  const pedir = (a, rot, dica, cls) => b => { const box = document.createElement('div'); box.className = 'extra'; box.innerHTML = '<textarea placeholder="' + dica + '"></textarea>'; const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'bt ' + (cls || 'pri'); ok.textContent = rot; box.appendChild(ok); ac.after(box); box.querySelector('textarea').focus(); ok.onclick = () => { const v = box.querySelector('textarea').value.trim(); if (a !== 'cancelar' && !v) { toast('Escreva antes de confirmar.', true); return; } fazer(a, ok, v); }; b.disabled = true; };
+  if (it.status === 'Publicado') { if (it.link) bt('Ver no Instagram ↗', 'pri', () => open(it.link, '_blank', 'noopener')); }
+  else {
+    if (pode) bt('Aprovar', 'pri', /sim/i.test(it.revisar) ? pedir('aprovar', 'Confirmar e aprovar', 'Confirmação da revisão') : b => fazer('aprovar', b));
+    if (falta || ((reel || autoral) && it.status !== 'Aprovado')) bt(reel ? (it.temArquivo ? 'Trocar vídeo' : 'Enviar vídeo') : (it.temArquivo ? 'Trocar arquivo' : 'Enviar arquivo'), falta ? 'pri' : '', () => { $('gaveta').close(); abrirEnvio(it); });
+    if (pode) bt('Pedir ajuste', '', pedir('ajustar', 'Enviar ajuste', 'O que precisa mudar?'));
+    if (it.temArquivo || late) bt('Gerar de novo', '', b => fazer('regerar', b));
+    bt('Reagendar', '', () => { $('gaveta').close(); abrirReag(it); });
+    if (it.status !== 'Pausado') bt('Cancelar', 'perigo', pedir('cancelar', 'Confirmar cancelamento', 'Motivo (opcional)', 'perigo'));
+  }
+  $('gaveta').showModal();
+}
+$('gav-fechar').addEventListener('click', () => $('gaveta').close());
+$('gaveta').addEventListener('click', e => { if (e.target === $('gaveta')) $('gaveta').close(); });
+$('gaveta').addEventListener('close', () => { document.querySelectorAll('#gaveta .extra').forEach(x => x.remove()); });
+
+/* ── ritmo nos ajustes ── */
+const RTE = { r: null };
+function desenharRitmoAjuste() {
+  if (!RTE.r) RTE.r = JSON.parse(JSON.stringify(ritmo()));
+  const box = $('rt-edit'); box.innerHTML = '';
+  Object.keys(FMT).forEach(k => {
+    const r = RTE.r[k];
+    const el = document.createElement('div'); el.className = 'rt-linha';
+    el.innerHTML = '<b style="color:' + FMT[k].cor + '">' + FMT[k].nome + '</b><span class="passo-n"><button type="button" aria-label="Menos">−</button><span>' + r.semana + '</span><button type="button" aria-label="Mais">+</button></span><div class="dias7">' + DIAS_C.map((c, d) => '<button type="button" aria-pressed="' + r.dias.includes(d) + '" title="' + DIAS_N[d] + '">' + c + '</button>').join('') + '</div><input type="time" value="' + esc(r.hora) + '" aria-label="Horário ' + FMT[k].nome + '">';
+    const [menos, mais] = el.querySelectorAll('.passo-n button');
+    menos.onclick = () => { r.semana = Math.max(0, r.semana - 1); desenharRitmoAjuste(); };
+    mais.onclick = () => { r.semana = Math.min(14, r.semana + 1); desenharRitmoAjuste(); };
+    el.querySelectorAll('.dias7 button').forEach((b, d) => b.onclick = () => { r.dias = r.dias.includes(d) ? r.dias.filter(x => x !== d) : r.dias.concat(d).sort(); if (!r.dias.length) r.dias = [d]; desenharRitmoAjuste(); });
+    el.querySelector('input').onchange = e => { r.hora = e.target.value || r.hora; };
+    box.appendChild(el);
+  });
+}
+async function salvarRitmo(aplicar, b) {
+  b.disabled = true;
+  try { const r = await api('ritmoSalvar', [RTE.r]); S.dados.ritmo = r.ritmo; RTE.r = null; toast('Ritmo salvo.'); if (aplicar) await completar(4); else await carregar(); }
+  catch (e) { toast(e.message, true); }
+  b.disabled = false;
+}
+$('b-rt-salvar').addEventListener('click', e => salvarRitmo(false, e.currentTarget));
+$('b-rt-aplicar').addEventListener('click', e => salvarRitmo(true, e.currentTarget));
+
+/* ── navegação extra ── */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-ir]'); if (!b) return;
+  irPara(b.dataset.ir);
+  if (b.dataset.f) { const p = document.querySelector('#filtros button[data-f="' + b.dataset.f + '"]'); if (p) p.click(); }
+});
+document.querySelectorAll('.guia').forEach(g => {
+  let fech = {}; try { fech = JSON.parse(localStorage.getItem('fab_guia') || '{}'); } catch (e) {}
+  if (fech[g.dataset.guia]) g.hidden = true;
+  g.querySelector('.x').onclick = () => { g.hidden = true; fech[g.dataset.guia] = 1; try { localStorage.setItem('fab_guia', JSON.stringify(fech)); } catch (e) {} };
+});
+$('b-novo-reel2').addEventListener('click', () => abrirEnvio(null));
+$('b-hoje-rodar').addEventListener('click', e => $('b-run').click());
+$('marca-m').addEventListener('click', e => { e.preventDefault(); irPara('hoje'); });
 
 /* ── início ── */
 S.sessao = guarda.ler();
