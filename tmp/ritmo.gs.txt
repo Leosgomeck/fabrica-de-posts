@@ -1,0 +1,311 @@
+/* ═════════════ 6. ritmo de produção e peças criadas pelo painel ═════════════ */
+
+/** Ritmo padrão (dias: 0 = domingo … 6 = sábado). Story: 1 por dia; em dia de reel o story vira o aviso do reel às 19:30. */
+const FAB_RITMO_PADRAO = {
+  story: { semana: 7, dias: [0, 1, 2, 3, 4, 5, 6], hora: '08:30' },
+  reel: { semana: 2, dias: [2, 5], hora: '19:00' },
+  carrossel: { semana: 3, dias: [1, 3, 5], hora: '12:30' }
+};
+
+/** Banco de pautas prontas usado pelo "Completar semana". O painel pula o que já foi usado na Pauta. */
+const FAB_BANCO = {
+  carrossel: [
+    ['Siga seu coração.', 'Escute o coração. Decida com a cabeça junto.', 'Coração cansado decide mal. | Emoção mostra o que importa; não mostra o caminho. | Ouça os dois antes de dar o passo.'],
+    ['O tempo cura tudo.', 'O tempo ajuda. Quem cura é o que você faz com ele.', 'Tempo parado só empilha dor. | Tem ferida que precisa de conversa, não de calendário. | Dê tempo ao tempo, mas não deixe tudo com ele.'],
+    ['Pense positivo.', 'Pense com clareza. Positivo é consequência.', 'Positividade forçada esconde problema real. | Admitir que está difícil é o primeiro passo. | Clareza mostra o que dá para mudar e o que é para aceitar.'],
+    ['Nunca desista.', 'Insista no que faz sentido. Desista do que só te desgasta.', 'Teimosia também se veste de persistência. | Saber parar é decisão, não derrota. | A pergunta: isso ainda me leva aonde eu quero?'],
+    ['Seja você mesmo.', 'Seja você, com respeito por quem está do lado.', 'Autenticidade não é licença para machucar. | Dá para ser verdadeiro sem ser bruto. | Você muda e cresce. Ser você também é evoluir.'],
+    ['Viva cada dia como se fosse o último.', 'Viva cada dia como se fosse ter amanhã. E cuide dele.', 'Se fosse o último, ninguém pagaria conta nem dormiria. | Pressa de viver tudo vira ansiedade. | Cuidar de hoje é o melhor presente para amanhã.'],
+    ['Quem quer arruma um jeito.', 'Quem quer arruma um jeito. Quem está exausto precisa de ajuda.', 'Nem toda falta de ação é falta de vontade. | Cansaço também trava quem quer muito. | Pergunte antes de julgar, inclusive a você.'],
+    ['Não leve nada para o pessoal.', 'Não leve tudo para o pessoal. Mas leve a sério o que se repete.', 'Ignorar tudo vira descaso com você mesmo. | Uma crítica isolada é ruído; três iguais são sinal. | Filtre, não desligue.'],
+    ['Perdoe e esqueça.', 'Perdoe para seguir. Lembre para se proteger.', 'Perdão libera você, não apaga o que aconteceu. | Esquecer tudo é abrir a porta para repetir. | Dá para ter paz e limite ao mesmo tempo.'],
+    ['Foque só no positivo.', 'Olhe o que é bom sem fingir que o resto não existe.', 'Ignorar o problema não o resolve. | Gratidão e preocupação podem andar juntas. | O razoável é ver o quadro inteiro.'],
+    ['Saia da zona de conforto.', 'Saia da zona de conforto aos poucos, sem sair de você.', 'Desconforto o tempo todo não é crescimento, é desgaste. | Um passo pequeno por semana já muda o mapa. | Conforto também é onde a gente recupera força.'],
+    ['Tudo tem um porquê.', 'Nem tudo tem porquê. Mas tudo pode ensinar algo.', 'Procurar motivo para tudo vira culpa. | Às vezes as coisas só acontecem. | O sentido vem do que você faz depois.']
+  ],
+  t2: ['Ser sincero é dizer tudo o que pensa?', 'Perdoar é aceitar tudo de novo?', 'Dizer não é falta de educação?', 'Mudar de ideia é fraqueza?', 'Esperar é perder tempo?', 'Silêncio também é resposta?', 'Dá para ser gentil e firme ao mesmo tempo?', 'Pedir desculpa é perder a razão?', 'Ficar sozinho é se isolar?', 'Ter calma é ser passivo?'],
+  t4: ['Calma não é lentidão. É direção.', 'Descansar também faz parte do trabalho.', 'Nem toda opinião precisa da sua resposta.', 'Paz não é ausência de problema. É saber onde pisar.', 'Comparação rouba a alegria do que já é seu.', 'Limite não é muro. É porta com chave.', 'Quem te ouve de verdade não interrompe para responder.', 'Pressa não é prioridade.', 'Concordar com tudo também é mentir.', 'Às vezes o passo certo é o menor.'],
+  t7: ['O que você faria hoje se não tivesse medo de errar?', 'Qual conselho você só entendeu anos depois?', 'Que hábito pequeno trouxe mais paz para sua rotina?', 'Quem você precisa agradecer e ainda não agradeceu?', 'O que você aprendeu este ano que levaria para a vida toda?', 'Qual conversa você está adiando?', 'O que te devolve a calma em 5 minutos?', 'Qual decisão você tomou com a cabeça e acertou?'],
+  reel: [
+    ['Paz não é ganhar a discussão', 'Eu precisei perder uma discussão para ganhar paz.', 'Perdi a discussão. Ganhei paz.', 'Nem toda discussão merece ser vencida. Qual você deixou passar e não se arrependeu?', 'paz interior, discussão, maturidade'],
+    ['O conselho que eu ignorei', 'Me deram esse conselho aos 20. Só entendi muito depois.', 'O conselho que eu ignorei', 'Tem conselho que só faz sentido depois. Qual foi o seu?', 'conselho de vida, experiência, sabedoria'],
+    ['Descansar sem culpa', 'Descansar não é prêmio. É manutenção.', 'Descanso não é prêmio', 'Você descansa ou só para quando quebra?', 'descanso, ansiedade, rotina'],
+    ['Dizer não com educação', 'Aprendi a dizer não sem pedir desculpa.', 'Não também é resposta', 'Um não bem dito evita dez sins arrependidos.', 'limites, dizer não, autoestima'],
+    ['Três pazes de 1 minuto', 'Três coisas de 1 minuto que mudaram meu dia.', '3 pazes de 1 minuto', 'Paz também se constrói em minutos. Qual é a sua?', 'paz interior, hábitos, bem-estar'],
+    ['Comparação custa caro', 'Comparar minha vida com a dos outros me custou anos.', 'Seu tempo é seu', 'Cada um tem o seu relógio. O seu está certo para você.', 'comparação, autoestima, ansiedade'],
+    ['Gratidão é gesto', 'Gratidão não é postar "gratidão".', 'Gratidão é gesto', 'Mande hoje uma mensagem de agradecimento. Quem vem à sua cabeça?', 'gratidão, gentileza, relacionamento'],
+    ['O que fica e o que vai', 'Antes do ano acabar, faça essa pergunta.', 'O que fica, o que vai', 'O que você leva e o que você deixa?', 'reflexão, recomeço, fim de ano']
+  ]
+};
+
+const FAB_TXT = {
+  redeS: 'IG + FB', redeR: 'IG + FB + TikTok',
+  notaS: 'IG/FB: interação (enquete, caixa, reação) aumenta prioridade nos próximos stories. Mesmo arquivo nos dois. TikTok: não publicar (alcance baixo, sem API).',
+  notaR: "IG: retenção nos 3s + envios por DM. FB: mesmo arquivo, sem marca d'água, favorece original. TikTok: keyword falada e na tela; arquivo limpo. Áudio próprio (API não acessa biblioteca do IG).",
+  notaC: 'IG: salvamentos e envios; último slide pede envio. FB: mesmo arquivo. TikTok: photo mode com as mesmas imagens + legenda com keywords.',
+  exT2: 'Fundo escuro, pergunta em destaque, régua exagero↔razoável↔omissão. Rodapé pede resposta no direct (a API não publica figurinhas).',
+  exT4: 'Fundo claro, frase em destaque, sublinhado na cor de destaque, rodapé nota do razoável. Rodapé pede resposta no direct.',
+  exT7: 'Fundo de apoio, pergunta em bloco claro. Rodapé pede resposta no direct; as respostas viram pauta.',
+  exT5: 'Compartilhe o Reel do dia com 1 frase sua (Enviar arquivo no painel). Sem arquivo até 18h, sai o T5 avisando o Reel novo.',
+  exT1: '7 slides. S1 clichê riscado, S2 "Parece bonito. Mas…", S3–S5 slides extras, S6 versão razoável, S7 régua + "Manda pra quem precisa ouvir isso."',
+  exR: 'Fala direta, luz natural, 20–30 s em 9:16. 0–3 s: gancho falado. Fecha com pergunta. Envie pelo painel (Enviar vídeo); capa T3 e legenda são gerados.'
+};
+
+function fabFmtChave_(formato) {
+  const f = fabNorm_(formato);
+  if (f === 'reel') return 'reel';
+  if (f === 'carrossel') return 'carrossel';
+  return 'story';
+}
+
+function fabRitmo_(cfg) {
+  let o = {};
+  try { o = JSON.parse((cfg && cfg.RITMO) || '{}'); } catch (e) { o = {}; }
+  const r = JSON.parse(JSON.stringify(FAB_RITMO_PADRAO));
+  Object.keys(r).forEach(function (k) {
+    const x = o[k] || {};
+    if (x.semana !== undefined && Number(x.semana) >= 0 && Number(x.semana) <= 14) r[k].semana = Math.round(Number(x.semana));
+    if (Array.isArray(x.dias) && x.dias.length) r[k].dias = x.dias.map(Number).filter(function (d) { return d >= 0 && d <= 6; });
+    if (/^\d{2}:\d{2}$/.test(String(x.hora || ''))) r[k].hora = String(x.hora);
+  });
+  return r;
+}
+
+function fabConfigGrava_(chave, valor, obs) {
+  const sh = SpreadsheetApp.openById(FAB.PLANILHA).getSheetByName(FAB.ABA.cfg);
+  const v = sh.getRange(1, 1, sh.getLastRow(), 1).getDisplayValues();
+  for (let i = 0; i < v.length; i++) {
+    if (String(v[i][0]).trim() === chave) { sh.getRange(i + 1, 2).setValue(valor); return; }
+  }
+  sh.appendRow([chave, valor, obs || '']);
+}
+
+function fabricaRitmoSalvar(o) {
+  fabDono_();
+  const r = fabRitmo_({ RITMO: JSON.stringify(o || {}) });
+  fabConfigGrava_('RITMO', JSON.stringify(r), 'Ritmo de produção por semana (story, reel, carrossel), definido no painel');
+  fabLog_(null, '', 'ritmo', 'salvo', '', 'stories ' + r.story.semana + ' · reels ' + r.reel.semana + ' · carrosséis ' + r.carrossel.semana);
+  return { ritmo: r };
+}
+
+/** Estado da Pauta para planejar: ocupação por dia e formato, temas já usados e o próximo ID. */
+function fabMapaPauta_(ctx) {
+  const dia = {}, usados = {};
+  let maior = 0;
+  for (let i = 1; i < ctx.v.length; i++) {
+    const L = fabLinha_(ctx, i);
+    const m = String(L.id || '').match(/^P(\d+)$/i);
+    if (m) maior = Math.max(maior, Number(m[1]));
+    [L.tema, L.texto].forEach(function (t) { const n = fabNorm_(String(t || '').replace(/^rasura:\s*/i, '')); if (n) usados[n] = true; });
+    if (!L.id || !L.data || L.status === FAB.ST.pausado) continue;
+    const k = fabFmtChave_(L.formato);
+    dia[L.data] = dia[L.data] || { story: 0, reel: 0, carrossel: 0 };
+    dia[L.data][k]++;
+  }
+  return { dia: dia, usados: usados, prox: maior + 1 };
+}
+
+function fabDiaTxt_(t) { return Utilities.formatDate(new Date(t), FAB.TZ, 'dd/MM/yyyy'); }
+function fabDiaSemana_(t) { return Number(Utilities.formatDate(new Date(t), FAB.TZ, 'u')) % 7; }
+function fabHoje0_() { return fabQuando_(Utilities.formatDate(new Date(), FAB.TZ, 'dd/MM/yyyy'), '00:00'); }
+
+/** Monta a linha da Pauta (mesma ordem de colunas da planilha) a partir de um objeto de campos. */
+function fabLinhaNova_(ctx, mapa, s) {
+  const linha = new Array(ctx.v[0].length).fill('');
+  const put = function (campo, valor) { if (ctx.c[campo] >= 0 && valor !== undefined) linha[ctx.c[campo]] = valor; };
+  const id = 'P' + ('00' + (mapa.prox++)).slice(-3);
+  const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  put('id', id); put('data', s.data); put('hora', s.hora); put('rede', s.rede); put('formato', s.formato); put('origem', s.origem);
+  put('tpl', s.tpl); put('tema', s.tema); put('gancho', s.gancho); put('exec', s.exec); put('texto', s.texto); put('legenda', s.legenda || '—');
+  put('cta', s.cta); put('tags', s.tags || '—'); put('status', FAB.ST.rascunho); put('revisar', s.revisar || 'Não');
+  put('extras', s.extras || ''); put('nota', s.nota || '');
+  const notaCol = fabCol_(ctx.v[0], 'Nota de algoritmo');
+  if (notaCol >= 0) linha[notaCol] = s.algo || '';
+  const diaCol = fabCol_(ctx.v[0], 'Dia');
+  if (diaCol >= 0) linha[diaCol] = dias[fabDiaSemana_(fabQuando_(s.data, '12:00'))];
+  mapa.dia[s.data] = mapa.dia[s.data] || { story: 0, reel: 0, carrossel: 0 };
+  mapa.dia[s.data][fabFmtChave_(s.formato)]++;
+  [s.tema, s.texto].forEach(function (t) { const n = fabNorm_(String(t || '').replace(/^rasura:\s*/i, '')); if (n) mapa.usados[n] = true; });
+  return { id: id, linha: linha };
+}
+
+function fabPegaBanco_(lista, mapa, chave) {
+  for (let i = 0; i < lista.length; i++) {
+    const item = lista[i];
+    const t = Array.isArray(item) ? item[chave || 0] : item;
+    if (!mapa.usados[fabNorm_(t)]) return item;
+  }
+  return null;
+}
+
+function fabSpecStory_(data, tipo, mapa, rotacao, hora) {
+  if (tipo === 'aviso') {
+    return { formato: 'Story', data: data, hora: '19:30', rede: FAB_TXT.redeS, origem: 'Autoral', tpl: 'T5 Story Aviso (fallback)',
+      tema: 'Reshare do Reel do dia com 1 frase sua', gancho: 'Saiu agora.', exec: FAB_TXT.exT5, texto: 'Saiu agora →', cta: 'Veja no perfil', algo: FAB_TXT.notaS };
+  }
+  const ordem = ['t2', 't4', 't7'];
+  for (let k = 0; k < 3; k++) {
+    const t = ordem[(rotacao + k) % 3];
+    const q = fabPegaBanco_(FAB_BANCO[t], mapa);
+    if (!q) continue;
+    const tpl = { t2: 'T2 Story Régua', t4: 'T4 Story Nota', t7: 'T7 Story Caixa' }[t];
+    const ex = { t2: FAB_TXT.exT2, t4: FAB_TXT.exT4, t7: FAB_TXT.exT7 }[t];
+    const cta = t === 't2' ? 'Responda no direct: sim ou não.' : 'Responda no direct.';
+    return { formato: 'Story', data: data, hora: hora || '08:30', rede: FAB_TXT.redeS, origem: 'Automático', tpl: tpl, tema: q, gancho: q, exec: ex, texto: q, cta: cta, algo: FAB_TXT.notaS };
+  }
+  return null;
+}
+
+function fabSpecCarrossel_(data, hora, mapa) {
+  const c = fabPegaBanco_(FAB_BANCO.carrossel, mapa, 0);
+  if (!c) return null;
+  return { formato: 'Carrossel', data: data, hora: hora, rede: FAB_TXT.redeR, origem: 'Automático', tpl: 'T1 Carrossel Rasura',
+    tema: 'Rasura: ' + c[0], gancho: "Slide 1: '" + c[0] + "' riscado.", exec: FAB_TXT.exT1, texto: c[1],
+    legenda: c[0] + ' Será? ' + c[1] + '\nSalva pra lembrar.', cta: 'Envie para alguém', tags: '#reflexão #paz #maturidade #vidareal #conselhos',
+    extras: c[2], algo: FAB_TXT.notaC };
+}
+
+function fabSpecReel_(data, hora, mapa) {
+  const r = fabPegaBanco_(FAB_BANCO.reel, mapa, 0);
+  if (!r) return null;
+  return { formato: 'Reel', data: data, hora: hora, rede: FAB_TXT.redeR, origem: 'Autoral', tpl: 'Autoral + T3 Capa',
+    tema: r[0], gancho: r[1], exec: FAB_TXT.exR, texto: r[2], legenda: r[3], cta: 'Comente / envie', tags: r[4], algo: FAB_TXT.notaR };
+}
+
+/**
+ * "Completar semana": cria só o que falta para cumprir o ritmo nas próximas N semanas (seg–dom),
+ * sem mexer no que já existe. Começa amanhã. Reel e carrossel nos dias preferidos; story todo dia
+ * (em dia de reel, o story é o aviso do reel às 19:30).
+ */
+function fabricaRitmoAplicar(semanas) {
+  fabDono_();
+  semanas = Math.max(1, Math.min(8, Number(semanas) || 4));
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) throw new Error('A Fábrica está rodando um ciclo. Tente em alguns segundos.');
+  try {
+    const ctx = fabContexto_();
+    const R = fabRitmo_(ctx.cfg);
+    const mapa = fabMapaPauta_(ctx);
+    const inicio = fabHoje0_() + 864e5;
+    const dow0 = fabDiaSemana_(inicio);
+    const seg0 = inicio - ((dow0 + 6) % 7) * 864e5;
+    const fim = seg0 + semanas * 7 * 864e5;
+    const novas = [], avisos = [];
+    const ocup = function (t, k) { const d = mapa.dia[fabDiaTxt_(t)]; return d ? d[k] : 0; };
+    const add = function (spec) { if (!spec) return false; const n = fabLinhaNova_(ctx, mapa, spec); novas.push({ id: n.id, linha: n.linha, data: spec.data, hora: spec.hora, formato: spec.formato, tema: spec.texto || spec.tema }); return true; };
+    for (let s = seg0; s < fim; s += 7 * 864e5) {
+      ['reel', 'carrossel'].forEach(function (k) {
+        let tem = 0;
+        for (let d = 0; d < 7; d++) tem += ocup(s + d * 864e5, k);
+        let falta = R[k].semana - tem;
+        const pref = [], resto = [];
+        for (let d = 0; d < 7; d++) {
+          const t = s + d * 864e5;
+          if (t < inicio || ocup(t, k)) continue;
+          (R[k].dias.indexOf(fabDiaSemana_(t)) >= 0 ? pref : resto).push(t);
+        }
+        // semana já começada: só nos dias preferidos (não empilha reel/carrossel no fim de semana)
+        (s < inicio ? pref : pref.concat(resto)).forEach(function (t) {
+          if (falta <= 0) return;
+          const spec = k === 'reel' ? fabSpecReel_(fabDiaTxt_(t), R.reel.hora, mapa) : fabSpecCarrossel_(fabDiaTxt_(t), R.carrossel.hora, mapa);
+          if (add(spec)) falta--; else if (avisos.indexOf(k) < 0) avisos.push(k);
+        });
+      });
+    }
+    if (R.story.semana > 0) {
+      let rot = 0;
+      for (let t = inicio; t < fim; t += 864e5) {
+        if (R.story.semana < 7 && R.story.dias.indexOf(fabDiaSemana_(t)) < 0) continue;
+        if (ocup(t, 'story')) continue;
+        const spec = fabSpecStory_(fabDiaTxt_(t), ocup(t, 'reel') ? 'aviso' : 'auto', mapa, rot++, R.story.hora);
+        if (!add(spec) && avisos.indexOf('story') < 0) avisos.push('story');
+      }
+    }
+    if (novas.length) ctx.sh.getRange(ctx.sh.getLastRow() + 1, 1, novas.length, ctx.v[0].length).setValues(novas.map(function (n) { return n.linha; }));
+    fabLog_(ctx, '', 'ritmo', 'completar', '', novas.length + ' peça(s) em ' + semanas + ' semana(s)');
+    return {
+      criadas: novas.map(function (n) { return { id: n.id, data: n.data, hora: n.hora, formato: n.formato, tema: n.tema }; }),
+      aviso: avisos.length ? 'Banco de pautas esgotado para: ' + avisos.join(', ') + '. Peça novas ideias no chat ou use "Levar para a pauta" na Análise.' : ''
+    };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
+ * Cria peças vindas das propostas da Análise ("Levar para a pauta"), no próximo dia livre do formato
+ * dentro do ritmo. Toda peça criada assim vai com "Revisar antes? = Sim".
+ * p: { formato: 'Reel'|'Carrossel'|'Story', titulo, gancho, promessa, cta, cliche, razoavel, extras, origemId }
+ */
+function fabricaPautaCriar(pecas) {
+  fabDono_();
+  if (!Array.isArray(pecas) || !pecas.length) throw new Error('Nenhuma peça enviada.');
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) throw new Error('A Fábrica está rodando um ciclo. Tente em alguns segundos.');
+  try {
+    const ctx = fabContexto_();
+    const R = fabRitmo_(ctx.cfg);
+    const mapa = fabMapaPauta_(ctx);
+    const inicio = fabHoje0_() + 2 * 864e5;
+    const novas = [];
+    pecas.slice(0, 8).forEach(function (p) {
+      const k = fabFmtChave_(p.formato);
+      let alvo = 0;
+      for (let pass = 0; pass < 2 && !alvo; pass++) {
+        for (let t = inicio; t < inicio + 60 * 864e5; t += 864e5) {
+          const d = mapa.dia[fabDiaTxt_(t)];
+          if (d && d[k]) continue;
+          if (pass === 0 && R[k].dias.indexOf(fabDiaSemana_(t)) < 0) continue;
+          alvo = t; break;
+        }
+      }
+      if (!alvo) return;
+      const data = fabDiaTxt_(alvo);
+      const nota = 'Criada pela Análise' + (p.origemId ? ' a partir de ' + p.origemId : '') + ': revise o texto antes de aprovar';
+      let spec;
+      if (k === 'carrossel') {
+        spec = { formato: 'Carrossel', data: data, hora: R.carrossel.hora, rede: FAB_TXT.redeR, origem: 'Automático', tpl: 'T1 Carrossel Rasura',
+          tema: 'Rasura: ' + String(p.cliche || p.gancho || p.titulo || '').slice(0, 120), gancho: String(p.gancho || ''), exec: FAB_TXT.exT1,
+          texto: String(p.razoavel || p.promessa || '').slice(0, 160), legenda: String((p.gancho || '') + '\n' + (p.promessa || '') + '\n' + (p.cta || '')).trim(),
+          cta: String(p.cta || 'Envie para alguém'), tags: '#reflexão #paz #maturidade #vidareal #conselhos', extras: String(p.extras || ''), algo: FAB_TXT.notaC, revisar: 'Sim', nota: nota };
+      } else if (k === 'reel') {
+        spec = { formato: 'Reel', data: data, hora: R.reel.hora, rede: FAB_TXT.redeR, origem: 'Autoral', tpl: 'Autoral + T3 Capa',
+          tema: String(p.titulo || p.gancho || ''), gancho: String(p.gancho || ''), exec: FAB_TXT.exR + ' Promessa: ' + String(p.promessa || ''),
+          texto: String(p.titulo || p.gancho || '').slice(0, 80), legenda: String((p.promessa || '') + ' ' + (p.cta || '')).trim(), cta: String(p.cta || 'Siga para a sequência'),
+          tags: '—', algo: FAB_TXT.notaR, revisar: 'Sim', nota: nota };
+      } else {
+        spec = { formato: 'Story', data: data, hora: R.story.hora, rede: FAB_TXT.redeS, origem: 'Automático', tpl: 'T4 Story Nota',
+          tema: String(p.gancho || p.titulo || ''), gancho: String(p.gancho || ''), exec: FAB_TXT.exT4, texto: String(p.gancho || p.titulo || '').slice(0, 110),
+          cta: 'Responda no direct.', algo: FAB_TXT.notaS, revisar: 'Sim', nota: nota };
+      }
+      const n = fabLinhaNova_(ctx, mapa, spec);
+      novas.push({ id: n.id, linha: n.linha, data: data, hora: spec.hora, formato: spec.formato, tema: spec.texto });
+    });
+    if (!novas.length) throw new Error('Não encontrei dia livre nos próximos 60 dias para esse formato.');
+    ctx.sh.getRange(ctx.sh.getLastRow() + 1, 1, novas.length, ctx.v[0].length).setValues(novas.map(function (n) { return n.linha; }));
+    fabLog_(ctx, '', 'análise', 'levar para a pauta', '', novas.map(function (n) { return n.id; }).join(', '));
+    return { criadas: novas.map(function (n) { return { id: n.id, data: n.data, hora: n.hora, formato: n.formato, tema: n.tema }; }) };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/** Testes da Análise registrados com um clique (aba Experimentos da planilha). */
+function fabricaExperimento(o) {
+  fabDono_();
+  o = o || {};
+  const ss = SpreadsheetApp.openById(FAB.PLANILHA);
+  let sh = ss.getSheetByName('Experimentos');
+  if (!sh) {
+    sh = ss.insertSheet('Experimentos');
+    sh.getRange(1, 1, 1, 7).setValues([['Início', 'Experimento', 'Variável a testar', 'Variável fixa', 'Métrica de validação', 'Status', 'Resultado']]);
+    sh.setFrozenRows(1);
+  }
+  if (o.nome) {
+    sh.appendRow([Utilities.formatDate(new Date(), FAB.TZ, 'dd/MM/yyyy'), String(o.nome).slice(0, 200), String(o.testar || '').slice(0, 500), String(o.fixa || '').slice(0, 300), String(o.metrica || '').slice(0, 300), 'Em teste', '']);
+    fabLog_(null, '', 'análise', 'experimento', '', String(o.nome).slice(0, 120));
+  }
+  const n = sh.getLastRow();
+  const v = n > 1 ? sh.getRange(2, 1, n - 1, 7).getDisplayValues() : [];
+  return { experimentos: v.map(function (r) { return { inicio: r[0], nome: r[1], testar: r[2], fixa: r[3], metrica: r[4], status: r[5], resultado: r[6] }; }) };
+}
